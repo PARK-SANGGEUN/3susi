@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>모두의 입시결과 3개년 비교 온도계</title>
+
+<style>
+body{
+  margin:0;
+  font-family:"Noto Sans KR", system-ui;
+  background:linear-gradient(135deg,#eef2ff,#fdf2f8);
+}
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:24px;
+}
+h1{margin:0;font-size:1.8rem}
+.badge{
+  display:inline-block;
+  margin-top:8px;
+  padding:6px 14px;
+  border-radius:999px;
+  font-weight:800;
+  background:linear-gradient(90deg,#fde68a,#fb923c,#ef4444);
+}
+.selects{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+  margin-top:24px;
+}
+select{
+  padding:12px;
+  border-radius:999px;
+  border:1px solid #ccc;
+  font-weight:700;
+}
+.card{
+  background:#fff;
+  margin-top:24px;
+  padding:20px;
+  border-radius:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,.1);
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+th,td{
+  padding:8px;
+  border-bottom:1px solid #eee;
+  text-align:center;
+}
+tr.y2025{
+  background:linear-gradient(90deg,#fef9c3,#fed7aa);
+  font-weight:900;
+}
+.gauges{
+  display:flex;
+  gap:20px;
+  margin-top:16px;
+}
+.gauge{
+  width:80px;
+  height:180px;
+  background:#e5e7eb;
+  border-radius:40px;
+  display:flex;
+  align-items:flex-end;
+  overflow:hidden;
+}
+.fill{width:100%}
+.y2025 .fill{background:linear-gradient(#fde68a,#ef4444)}
+.y2024 .fill{background:linear-gradient(#86efac,#16a34a)}
+.y2023 .fill{background:linear-gradient(#93c5fd,#2563eb)}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>모두의 입시결과 3개년 비교 온도계</h1>
+  <div class="badge">출처: 어디가 3개년 입시결과</div>
+
+  <div class="selects">
+    <select id="univ"><option>대학 선택</option></select>
+    <select id="major"><option>모집단위</option></select>
+    <select id="track"><option>교과/종합</option></select>
+    <select id="type"><option>전형명</option></select>
+  </div>
+
+  <div class="card" id="output">
+    위에서 순서대로 선택해주세요.
+  </div>
+</div>
+
+<script>
+let DATA;
+
+fetch('data.json')
+  .then(res => res.json())
+  .then(json => {
+    DATA = json;
+    init();
+  });
+
+const univ = document.getElementById('univ');
+const major = document.getElementById('major');
+const track = document.getElementById('track');
+const type  = document.getElementById('type');
+const output = document.getElementById('output');
+
+function init(){
+  Object.keys(DATA).forEach(u=>{
+    univ.appendChild(new Option(u,u));
+  });
+}
+
+univ.onchange = () => {
+  major.innerHTML='<option>모집단위</option>';
+  track.innerHTML='<option>교과/종합</option>';
+  type.innerHTML='<option>전형명</option>';
+  Object.keys(DATA[univ.value]||{}).forEach(m=>{
+    major.appendChild(new Option(m,m));
+  });
+};
+
+major.onchange = () => {
+  track.innerHTML='<option>교과/종합</option>';
+  type.innerHTML='<option>전형명</option>';
+  Object.keys(DATA[univ.value][major.value]||{}).forEach(t=>{
+    track.appendChild(new Option(t,t));
+  });
+};
+
+track.onchange = () => {
+  type.innerHTML='<option>전형명</option>';
+  Object.keys(DATA[univ.value][major.value][track.value]||{}).forEach(p=>{
+    type.appendChild(new Option(p,p));
+  });
+};
+
+type.onchange = () => {
+  const rec = DATA[univ.value][major.value][track.value][type.value];
+
+  output.innerHTML = `
+    <table>
+      <tr>
+        <th>연도</th><th>모집인원</th><th>경쟁률</th><th>70%cut</th>
+      </tr>
+      ${['2025','2024','2023'].map(y=>{
+        const r = rec[y] || {};
+        return `<tr class="y${y}">
+          <td>${y}</td>
+          <td>${r.모집인원 || '-'}</td>
+          <td>${r.경쟁률 || '-'}</td>
+          <td>${r.cut70 || '-'}</td>
+        </tr>`;
+      }).join('')}
+    </table>
+
+    <div class="gauges">
+      ${['2025','2024','2023'].map(y=>{
+        const v = rec[y]?.cut70;
+        const h = v ? Math.max(10,(6 - v) * 20) : 0;
+        return `
+          <div class="gauge y${y}">
+            <div class="fill" style="height:${h}%"></div>
+          </div>`;
+      }).join('')}
+    </div>
+  `;
+};
+</script>
+</body>
+</html>
