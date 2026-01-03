@@ -6,214 +6,293 @@
 <title>모두의 입시결과 3개년 비교 온도계</title>
 
 <style>
+:root{
+  --bg:#f6f4fb;
+  --card:#ffffff;
+  --primary:#6c63ff;
+  --accent:#ffb703;
+  --text:#1f2937;
+  --muted:#6b7280;
+}
+
+*{box-sizing:border-box}
 body{
   margin:0;
-  font-family: Pretendard, Apple SD Gothic Neo, Arial;
-  background: linear-gradient(135deg,#eef2ff,#fdf2f8);
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
+  background:linear-gradient(135deg,#eef2ff,#fdf2f8);
+  color:var(--text);
 }
+
 .container{
   max-width:1200px;
-  margin:30px auto;
-  padding:30px;
-  background:#fff;
+  margin:40px auto;
+  padding:24px;
+  background:rgba(255,255,255,.85);
   border-radius:24px;
-  box-shadow:0 20px 60px rgba(0,0,0,.15);
+  box-shadow:0 20px 40px rgba(0,0,0,.08);
 }
-h1{margin:0;font-size:34px}
-.sub{margin-top:6px;font-weight:600}
+
+h1{margin:0;font-size:32px}
+.subtitle{margin-top:6px;font-weight:700}
 .badge{
   display:inline-block;
-  padding:10px 18px;
-  border-radius:30px;
-  background:linear-gradient(90deg,#fde047,#ef4444);
+  margin-left:12px;
+  padding:6px 14px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#ffb703,#fb8500);
   color:#000;
   font-weight:700;
-  margin-top:10px;
 }
-.help{
-  margin-top:14px;
-  padding:14px;
+
+.guide{
+  margin:20px 0;
+  padding:14px 18px;
   border-radius:14px;
   background:#f1f5f9;
   font-size:14px;
 }
-.selects{
+
+.controls{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:12px;
-  margin-top:20px;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:14px;
 }
+
 select,button{
   padding:14px;
   border-radius:14px;
-  border:1px solid #ddd;
+  border:1px solid #e5e7eb;
   font-size:15px;
 }
+
 button.primary{
-  background:#fde047;
-  font-weight:700;
+  background:linear-gradient(90deg,#facc15,#fb8500);
   border:none;
+  font-weight:800;
+  cursor:pointer;
 }
-.compare{
+
+button.ghost{
+  background:#e5e7eb;
+  border:none;
+  cursor:pointer;
+}
+
+.compare-list{
   margin-top:30px;
 }
+
 .card{
+  background:var(--card);
   border-radius:20px;
   padding:20px;
-  background:#f8fafc;
   margin-bottom:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
 }
-table{
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:800;
+}
+
+.table{
   width:100%;
   border-collapse:collapse;
+  margin-top:14px;
 }
-th,td{
+.table th,.table td{
   padding:10px;
+  border-bottom:1px solid #e5e7eb;
   text-align:center;
 }
-th{
-  background:#e0e7ff;
+
+.table tr.highlight{
+  background:#fff7ed;
+  font-weight:800;
 }
-tr.highlight{
-  background:#fff3c4;
-  font-weight:700;
-}
+
 .gauges{
   display:flex;
   gap:20px;
-  justify-content:center;
-  margin-top:20px;
+  margin-top:18px;
 }
+
 .gauge{
-  width:70px;
-  height:240px;
+  flex:1;
+  height:220px;
   background:#e5e7eb;
-  border-radius:40px;
+  border-radius:999px;
   position:relative;
+  overflow:hidden;
 }
+
 .fill{
   position:absolute;
   bottom:0;
   width:100%;
-  border-radius:40px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  color:#fff;
+  font-weight:800;
 }
-.scale{
+
+.year-label{
   position:absolute;
-  right:-30px;
-  font-size:12px;
-}
-.scale div{height:24px}
-.marker{
-  position:absolute;
-  left:0;
+  top:8px;
   width:100%;
   text-align:center;
-  font-size:13px;
   font-weight:700;
-  color:#000;
+  color:#374151;
+}
+
+@media(max-width:768px){
+  .gauges{flex-direction:column}
 }
 </style>
 </head>
 
 <body>
 <div class="container">
-  <h1>모두의 입시결과 3개년 비교 온도계</h1>
-  <div class="sub">Copyright@All Teachers</div>
-  <div class="badge">출처: 어디가 3개년 입시결과</div>
 
-  <div class="help">
-    ① 대학 → ② 모집단위 → ③ 전형 선택 → ④ 세부 전형 선택<br>
-    최대 3개까지 비교 가능 / 2025년 데이터는 강조 표시
+  <h1>모두의 입시결과 3개년 비교 온도계
+    <span class="badge">출처: 어디가 3개년 입시결과</span>
+  </h1>
+  <div class="subtitle">Copyright@All Teachers</div>
+
+  <div class="guide">
+    ① 대학 → ② 모집단위 → ③ 전형 선택 → ④ 세부 전형 선택<br/>
+    • 최대 3개까지 비교 가능 / 새로고침해도 유지됩니다.
   </div>
 
-  <div class="selects">
-    <select id="univ"></select>
-    <select id="major"></select>
-    <select id="track"></select>
-    <select id="type"></select>
-    <button class="primary" onclick="addCompare()">비교 추가 (최대 3)</button>
+  <div class="controls">
+    <select id="univ"><option>대학 선택</option></select>
+    <select id="major"><option>모집단위</option></select>
+    <select id="track"><option>전형 선택</option></select>
+    <select id="type"><option>세부 전형</option></select>
+    <button class="primary" id="add">비교 추가 (최대 3)</button>
+    <button class="ghost" id="reset">초기화</button>
   </div>
 
-  <div class="compare" id="compare"></div>
+  <div class="compare-list" id="list"></div>
+
 </div>
 
 <script>
-var API = "https://script.google.com/macros/s/AKfycbz_nkDgCK8-tPgvEFR-QAzzAxE9Dke7udddR68y7CIOEs4JZe8B2VWDvMuu_CdBzzsi/exec";
-var DATA = {};
-var selected = JSON.parse(localStorage.getItem("compare") || "[]");
+const DATA_URL="https://script.google.com/macros/s/AKfycbz_nkDgCK8-tPgvEFR-QAzzAxE9Dke7udddR68y7CIOEs4JZe8B2VWDvMuu_CdBzzsi/exec";
+let DATA={}, selected=[];
 
-fetch(API).then(function(r){return r.json()}).then(function(d){
-  DATA = d;
-  init();
+const univ=document.getElementById("univ");
+const major=document.getElementById("major");
+const track=document.getElementById("track");
+const type=document.getElementById("type");
+const list=document.getElementById("list");
+
+fetch(DATA_URL).then(r=>r.json()).then(d=>{
+  DATA=d;
+  Object.keys(DATA["2025"]).forEach(u=>univ.add(new Option(u,u)));
+  restore();
 });
 
-function init(){
-  var u = document.getElementById("univ");
-  u.innerHTML = "<option>대학 선택</option>";
-  var y = DATA["2025"];
-  for(var k in y) u.innerHTML += "<option>"+k+"</option>";
-}
-
-document.getElementById("univ").onchange=function(){
-  var m=document.getElementById("major");
-  m.innerHTML="<option>모집단위</option>";
-  var y=DATA["2025"][this.value]||{};
-  for(var k in y) m.innerHTML+="<option>"+k+"</option>";
+univ.onchange=()=>{
+  major.length=1;
+  track.length=1;
+  type.length=1;
+  Object.keys(DATA["2025"][univ.value]||{}).forEach(m=>major.add(new Option(m,m)));
 };
 
-document.getElementById("major").onchange=function(){
-  var t=document.getElementById("track");
-  t.innerHTML="<option>전형 선택</option>";
-  var u=document.getElementById("univ").value;
-  var y=DATA["2025"][u][this.value]||{};
-  for(var k in y) t.innerHTML+="<option>"+k+"</option>";
+major.onchange=()=>{
+  track.length=1;
+  type.length=1;
+  Object.keys(DATA["2025"][univ.value][major.value]||{}).forEach(t=>track.add(new Option(t,t)));
 };
 
-document.getElementById("track").onchange=function(){
-  var ty=document.getElementById("type");
-  ty.innerHTML="<option>세부 전형</option>";
-  var u=univ.value,m=major.value;
-  var y=DATA["2025"][u][m][this.value]||{};
-  for(var k in y) ty.innerHTML+="<option>"+k+"</option>";
+track.onchange=()=>{
+  type.length=1;
+  Object.keys(DATA["2025"][univ.value][major.value][track.value]||{}).forEach(p=>type.add(new Option(p,p)));
 };
 
-function scoreToHeight(v){
-  if(!v) return 0;
-  return Math.max(10,(9-v)*11);
-}
+document.getElementById("add").onclick=()=>{
+  if(selected.length>=3)return alert("최대 3개까지");
+  const key=[univ.value,major.value,track.value,type.value].join("|");
+  if(selected.includes(key))return;
+  selected.push(key);
+  save();
+  render();
+};
 
-function addCompare(){
-  if(selected.length>=3) return alert("최대 3개");
-  selected.push({
-    u:univ.value,m:major.value,t:track.value,ty:type.value
-  });
-  localStorage.setItem("compare",JSON.stringify(selected));
+document.getElementById("reset").onclick=()=>{
+  selected=[];
+  save();
+  render();
+};
+
+function save(){localStorage.setItem("compare",JSON.stringify(selected))}
+function restore(){
+  selected=JSON.parse(localStorage.getItem("compare")||"[]");
   render();
 }
 
 function render(){
-  var box=document.getElementById("compare");
-  box.innerHTML="";
-  for(var i=0;i<selected.length;i++){
-    var s=selected[i];
-    var html="<div class='card'><b>"+s.u+" / "+s.m+"</b>";
-    html+="<table><tr><th>연도</th><th>70%cut</th></tr>";
-    var years=["2025","2024","2023"];
-    html+="</table><div class='gauges'>";
-    for(var y=0;y<years.length;y++){
-      var r=DATA[years[y]][s.u][s.m][s.t][s.ty];
-      var h=scoreToHeight(r.cut70);
-      var color=y==0?"linear-gradient(#ef4444,#fde047)":
-                y==1?"linear-gradient(#22c55e,#bbf7d0)":
-                      "linear-gradient(#3b82f6,#bfdbfe)";
-      html+="<div class='gauge'><div class='fill' style='height:"+h+"%;background:"+color+"'></div>";
-      html+="<div class='marker' style='bottom:"+h+"%'>"+r.cut70+"</div></div>";
-    }
-    html+="</div></div>";
-    box.innerHTML+=html;
-  }
+  list.innerHTML="";
+  selected.forEach(k=>{
+    const [u,m,t,p]=k.split("|");
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <div class="card-header">
+        ${u} / ${m} / ${p}
+        <button onclick="remove('${k}')">❌</button>
+      </div>
+      ${makeTable(u,m,t,p)}
+      ${makeGauges(u,m,t,p)}
+    `;
+    list.appendChild(card);
+  });
 }
-render();
+
+function remove(k){
+  selected=selected.filter(x=>x!==k);
+  save();render();
+}
+
+function makeTable(u,m,t,p){
+  const years=["2025","2024","2023"];
+  let rows=years.map(y=>{
+    const r=DATA[y]?.[u]?.[m]?.[t]?.[p]||{};
+    return `<tr class="${y==='2025'?'highlight':''}">
+      <td>${y}</td>
+      <td>${r.quota||"-"}</td>
+      <td>${r.ratio||"-"}</td>
+      <td>${r.rank||"-"}</td>
+      <td>${r.cut50||"-"}</td>
+      <td>${r.cut70||"-"}</td>
+    </tr>`;
+  }).join("");
+  return `<table class="table">
+    <tr><th>연도</th><th>모집인원</th><th>경쟁률</th><th>충원</th><th>50%</th><th>70%</th></tr>
+    ${rows}
+  </table>`;
+}
+
+function makeGauges(u,m,t,p){
+  const years=["2025","2024","2023"];
+  return `<div class="gauges">`+years.map(y=>{
+    const v=DATA[y]?.[u]?.[m]?.[t]?.[p]?.cut70;
+    const h=v?Math.max(10,(9-v)/8*100):5;
+    const color=y==="2025"?"linear-gradient(#fb8500,#f97316)":
+                y==="2024"?"linear-gradient(#22c55e,#16a34a)":
+                "linear-gradient(#3b82f6,#2563eb)";
+    return `<div class="gauge">
+      <div class="year-label">${y}</div>
+      <div class="fill" style="height:${h}%;background:${color}">
+        ${v||"-"}
+      </div>
+    </div>`;
+  }).join("")+`</div>`;
+}
 </script>
 </body>
 </html>
