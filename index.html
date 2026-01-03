@@ -7,271 +7,303 @@
 
 <style>
 :root{
-  --bg:#f6f7fb;
+  --blue:#3b82f6;
+  --yellow:#facc15;
+  --red:#ef4444;
+  --bg:#f5f6ff;
   --card:#ffffff;
-  --primary:#ffb703;
-  --blue:#4dabf7;
-  --yellow:#ffd43b;
-  --red:#ff6b6b;
-  --gray:#dee2e6;
+  --text:#111827;
 }
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family: Pretendard, Apple SD Gothic Neo, sans-serif;
-  background:linear-gradient(180deg,#f3f4ff,#fff);
-}
+
+*{box-sizing:border-box;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+body{margin:0;background:var(--bg);color:var(--text)}
+
 .container{
   max-width:1200px;
-  margin:40px auto;
+  margin:32px auto;
   padding:24px;
+  background:linear-gradient(135deg,#fff,#fdf2f8);
+  border-radius:28px;
+  box-shadow:0 30px 60px rgba(0,0,0,.12);
 }
-.card{
-  background:var(--card);
-  border-radius:20px;
-  padding:32px;
-  box-shadow:0 20px 40px rgba(0,0,0,.08);
-}
-h1{margin:0;font-size:28px}
-.subtitle{margin-top:6px;font-weight:600}
+
+h1{margin:0;font-size:32px}
+.sub{font-weight:600;margin-top:6px}
 .badge{
   display:inline-block;
-  margin-top:14px;
+  margin-top:12px;
   padding:8px 14px;
   border-radius:999px;
-  background:linear-gradient(90deg,#ffd43b,#ff6b6b);
+  background:linear-gradient(90deg,#facc15,#ef4444);
+  color:#111;
   font-weight:700;
 }
+
 .guide{
-  margin-top:16px;
-  background:#f1f3f5;
-  padding:12px 16px;
-  border-radius:12px;
+  margin:16px 0;
+  padding:14px 18px;
+  background:#f3f4f6;
+  border-radius:16px;
   font-size:14px;
 }
-.selects{
+
+.controls{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  grid-template-columns:1fr 1fr 1fr 1fr auto;
   gap:12px;
-  margin-top:20px;
+  margin-top:16px;
 }
+
 select,button{
   padding:14px;
-  border-radius:12px;
-  border:1px solid var(--gray);
+  border-radius:14px;
+  border:1px solid #e5e7eb;
   font-size:15px;
 }
-button.primary{
-  background:var(--primary);
+
+button{
+  background:#fbbf24;
   border:none;
   font-weight:700;
   cursor:pointer;
 }
-button:disabled,select:disabled{
-  opacity:.5;
-}
+
+button:disabled{opacity:.5;cursor:not-allowed}
+
 .progress-wrap{
-  margin-top:24px;
-  display:none;
+  margin-top:16px;
 }
 .progress{
   height:8px;
-  background:#e9ecef;
-  border-radius:8px;
+  border-radius:999px;
+  background:#e5e7eb;
   overflow:hidden;
 }
-.progress-bar{
+.progress span{
+  display:block;
   height:100%;
   width:0%;
-  background:linear-gradient(90deg,#4dabf7,#ff6b6b);
-  transition:width .4s;
+  background:linear-gradient(90deg,var(--blue),var(--yellow),var(--red));
+  transition:width .3s ease;
 }
-.loading-text{
-  margin-top:8px;
-  font-size:13px;
-  color:#555;
-}
+.progress-text{font-size:13px;margin-top:6px}
+
 .compare-area{
-  margin-top:30px;
+  margin-top:24px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:20px;
+  gap:16px;
 }
-.compare-card{
-  background:#fff;
-  border-radius:18px;
+
+.card{
+  background:var(--card);
+  border-radius:22px;
   padding:20px;
-  box-shadow:0 10px 20px rgba(0,0,0,.06);
-  position:relative;
+  box-shadow:0 12px 28px rgba(0,0,0,.1);
 }
-.remove{
-  position:absolute;
-  top:12px;
-  right:14px;
-  cursor:pointer;
-  font-weight:900;
+
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:700;
 }
-.thermo{
+
+.remove{cursor:pointer;color:#ef4444}
+
+.thermos{
+  display:flex;
+  gap:24px;
   margin-top:16px;
-  height:220px;
 }
-@media(max-width:600px){
-  h1{font-size:22px}
+
+.thermo{
+  width:80px;
+  height:260px;
+}
+
+@media(max-width:768px){
+  .controls{grid-template-columns:1fr}
+  .thermos{justify-content:center}
 }
 </style>
 </head>
 
 <body>
 <div class="container">
-  <div class="card">
-    <h1>모두의 수시 3개년 입시결과 비교 온도계</h1>
-    <div class="subtitle">Copyright@All Teachers</div>
-    <div class="badge">출처 : 어디가 3개년 입시결과</div>
 
-    <div class="guide">
-      ① 대학 → ② 모집단위 → ③ 전형 → ④ 세부전형 선택<br>
-      최대 3개 비교 가능 · 2025년 데이터 강조
-    </div>
+<h1>모두의 수시 3개년 입시결과 비교 온도계</h1>
+<div class="sub">Copyright@All Teachers</div>
+<div class="badge">출처: 어디가 3개년 입시결과</div>
 
-    <div class="selects">
-      <select id="univ" disabled><option>로딩 중...</option></select>
-      <select id="dept" disabled><option>모집단위</option></select>
-      <select id="track" disabled><option>전형</option></select>
-      <select id="detail" disabled><option>세부전형</option></select>
-      <button class="primary" id="addBtn" disabled>비교 추가 (최대 3)</button>
-    </div>
+<div class="guide">
+① 대학 → ② 모집단위 → ③ 전형 → ④ 세부전형 선택<br>
+최대 3개 비교 가능 · 2025 데이터 강조
+</div>
 
-    <div class="progress-wrap" id="loader">
-      <div class="progress">
-        <div class="progress-bar" id="bar"></div>
-      </div>
-      <div class="loading-text" id="loadingText">데이터 불러오는 중...</div>
-    </div>
+<div class="controls">
+<select id="univ" disabled><option>로딩 중...</option></select>
+<select id="dept" disabled><option>모집단위</option></select>
+<select id="type" disabled><option>전형</option></select>
+<select id="detail" disabled><option>세부전형</option></select>
+<button id="add" disabled>비교 추가 (최대 3)</button>
+</div>
 
-    <div class="compare-area" id="compareArea"></div>
-  </div>
+<div class="progress-wrap">
+  <div class="progress"><span id="bar"></span></div>
+  <div class="progress-text" id="ptext">데이터 불러오는 중...</div>
+</div>
+
+<div class="compare-area" id="cards"></div>
+
 </div>
 
 <script>
-/* ================= 기본 설정 ================= */
-const GAS_URL = "https://script.google.com/macros/s/AKfycbw4cVu8rVN-EjUv1XIBQ0xWAnv0Rd9gl4q-2Oyxa9vSOEcl0cqONZWAcqAMsDE4CxY/exec";
-const YEARS = [2025,2024,2023];
-const CACHE_KEY = "admissionDataV1";
-const CACHE_TIME = 1000*60*60*8;
+/* ================= 설정 ================= */
+const GAS_URL =
+"https://script.google.com/macros/s/AKfycbw4cVu8rVN-EjUv1XIBQ0xWAnv0Rd9gl4q-2Oyxa9vSOEcl0cqONZWAcqAMsDE4CxY/exec";
+
+const YEARS = ["2025","2024","2023"];
+const CACHE_KEY="susi_data_v1";
+const CACHE_HOUR=8;
 
 /* ================= 상태 ================= */
-let DATA = null;
-let selected = [];
+let DATA=null;
+let selected=[];
 
-/* ================= 로딩 UI ================= */
-const loader = document.getElementById("loader");
-const bar = document.getElementById("bar");
-const loadingText = document.getElementById("loadingText");
+/* ================= 진행바 ================= */
+let fake=0;
+const bar=document.getElementById("bar");
+const ptext=document.getElementById("ptext");
+const timer=setInterval(()=>{
+  fake=Math.min(fake+5,90);
+  bar.style.width=fake+"%";
+},120);
 
-function showLoader(){
-  loader.style.display="block";
-  let p=0;
-  const t=setInterval(()=>{
-    p=Math.min(p+5,90);
-    bar.style.width=p+"%";
-  },300);
-  loader._t=t;
-}
-function hideLoader(){
-  clearInterval(loader._t);
-  bar.style.width="100%";
-  setTimeout(()=>loader.style.display="none",500);
-}
-
-/* ================= 데이터 로드 ================= */
-async function loadData(){
-  showLoader();
-
-  const cached = localStorage.getItem(CACHE_KEY);
-  if(cached){
-    const {time,data}=JSON.parse(cached);
-    if(Date.now()-time<CACHE_TIME){
-      DATA=data;
-      hideLoader();
-      initUI();
-      return;
+/* ================= 데이터 로딩 ================= */
+(async()=>{
+  try{
+    const cache=localStorage.getItem(CACHE_KEY);
+    if(cache){
+      const obj=JSON.parse(cache);
+      if(Date.now()-obj.t < CACHE_HOUR*3600000){
+        DATA=obj.d;
+        init();
+        return;
+      }
     }
+
+    const res=await fetch(GAS_URL,{cache:"no-store"});
+    DATA=await res.json();
+    localStorage.setItem(CACHE_KEY,JSON.stringify({t:Date.now(),d:DATA}));
+    init();
+  }catch(e){
+    ptext.textContent="데이터를 불러오지 못했습니다.";
+    console.error(e);
+  }finally{
+    clearInterval(timer);
+    bar.style.width="100%";
+    setTimeout(()=>document.querySelector(".progress-wrap").style.display="none",500);
   }
-
-  const res = await fetch(GAS_URL);
-  const json = await res.json();
-
-  DATA=json;
-  localStorage.setItem(CACHE_KEY,JSON.stringify({time:Date.now(),data:json}));
-  hideLoader();
-  initUI();
-}
+})();
 
 /* ================= UI 초기화 ================= */
-function initUI(){
-  const univSel=document.getElementById("univ");
-  univSel.innerHTML='<option value="">대학 선택</option>';
-  Object.keys(DATA[2025]).forEach(u=>{
-    univSel.add(new Option(u,u));
+function init(){
+  const univ=document.getElementById("univ");
+  univ.innerHTML="<option>대학 선택</option>";
+  Object.keys(DATA[YEARS[0]]).forEach(u=>{
+    univ.append(new Option(u,u));
   });
-  enable(univSel);
+  univ.disabled=false;
+  ptext.textContent="데이터 로딩 완료";
 }
 
-/* ================= 헬퍼 ================= */
-function enable(el){el.disabled=false}
-function disable(el){el.disabled=true}
-
-/* ================= 이벤트 ================= */
-document.getElementById("univ").onchange=e=>{
-  const u=e.target.value;
-  const dept=document.getElementById("dept");
-  dept.innerHTML='<option value="">모집단위</option>';
-  if(!u)return;
-  Object.keys(DATA[2025][u]).forEach(d=>dept.add(new Option(d,d)));
-  enable(dept);
+/* ================= 드롭다운 ================= */
+univ.onchange=()=>{
+  dept.innerHTML="<option>모집단위</option>";
+  type.innerHTML="<option>전형</option>";
+  detail.innerHTML="<option>세부전형</option>";
+  const u=univ.value;
+  if(!DATA[YEARS[0]][u])return;
+  Object.keys(DATA[YEARS[0]][u]).forEach(d=>{
+    dept.append(new Option(d,d));
+  });
+  dept.disabled=false;
 };
 
-document.getElementById("dept").onchange=e=>{
-  const u=univ.value,d=e.target.value;
-  const track=document.getElementById("track");
-  track.innerHTML='<option value="">전형</option>';
-  if(!d)return;
-  Object.keys(DATA[2025][u][d]).forEach(t=>track.add(new Option(t,t)));
-  enable(track);
+dept.onchange=()=>{
+  type.innerHTML="<option>전형</option>";
+  detail.innerHTML="<option>세부전형</option>";
+  const obj=DATA[YEARS[0]][univ.value][dept.value];
+  Object.keys(obj).forEach(t=>type.append(new Option(t,t)));
+  type.disabled=false;
 };
 
-document.getElementById("track").onchange=e=>{
-  const u=univ.value,d=dept.value,t=e.target.value;
-  const det=document.getElementById("detail");
-  det.innerHTML='<option value="">세부전형</option>';
-  if(!t)return;
-  Object.keys(DATA[2025][u][d][t]).forEach(x=>det.add(new Option(x,x)));
-  enable(det);
-  enable(addBtn);
+type.onchange=()=>{
+  detail.innerHTML="<option>세부전형</option>";
+  const obj=DATA[YEARS[0]][univ.value][dept.value][type.value];
+  Object.keys(obj).forEach(d=>detail.append(new Option(d,d)));
+  detail.disabled=false;
+  add.disabled=false;
 };
+
+/* ================= 비교 추가 ================= */
+add.onclick=()=>{
+  if(selected.length>=3)return;
+  selected.push({
+    u:univ.value,
+    d:dept.value,
+    t:type.value,
+    s:detail.value
+  });
+  render();
+};
+
+/* ================= 렌더 ================= */
+function render(){
+  const area=document.getElementById("cards");
+  area.innerHTML="";
+  selected.forEach((x,i)=>{
+    const card=document.createElement("div");
+    card.className="card";
+    card.innerHTML=`
+      <div class="card-head">
+        ${x.u} · ${x.d}<span class="remove" onclick="del(${i})">✕</span>
+      </div>
+      <div class="thermos">
+        ${YEARS.map(y=>thermo(x,y)).join("")}
+      </div>
+    `;
+    area.append(card);
+  });
+}
+
+function del(i){
+  selected.splice(i,1);
+  render();
+}
 
 /* ================= 온도계 ================= */
-function thermo(value){
-  const pct=Math.max(0,Math.min(100,(10-value)*10));
+function thermo(x,y){
+  const d=DATA[y]?.[x.u]?.[x.d]?.[x.t]?.[x.s];
+  if(!d||!d.cut70)return `<div class="thermo"></div>`;
+  const v=Math.max(0,Math.min(100,(9-d.cut70)/8*100));
   return `
-<svg viewBox="0 0 60 200" class="thermo">
-<defs>
-<linearGradient id="g" x1="0" y1="1" x2="0" y2="0">
-<stop offset="0%" stop-color="#4dabf7"/>
-<stop offset="50%" stop-color="#ffd43b"/>
-<stop offset="100%" stop-color="#ff6b6b"/>
-</linearGradient>
-</defs>
-<rect x="20" y="10" width="20" height="160" rx="10" fill="#eee"/>
-<rect x="20" y="${170-pct*1.6}" width="20" height="${pct*1.6}" rx="10" fill="url(#g)">
-<animate attributeName="height" from="0" to="${pct*1.6}" dur="0.8s"/>
-</rect>
-<text x="30" y="${165-pct*1.6}" text-anchor="middle" font-size="12">${value}</text>
-</svg>`;
+  <svg class="thermo" viewBox="0 0 80 260">
+    <defs>
+      <linearGradient id="g${y}" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="#3b82f6"/>
+        <stop offset="50%" stop-color="#facc15"/>
+        <stop offset="100%" stop-color="#ef4444"/>
+      </linearGradient>
+    </defs>
+    <rect x="30" y="10" width="20" height="220" rx="10" fill="#e5e7eb"/>
+    <rect x="30" y="${230-v*2.2}" width="20" height="${v*2.2}" rx="10" fill="url(#g${y})">
+      <animate attributeName="height" from="0" to="${v*2.2}" dur="0.8s"/>
+    </rect>
+    <text x="40" y="250" text-anchor="middle" font-size="12">${y}</text>
+    <text x="40" y="${230-v*2.2-6}" text-anchor="middle" font-size="11">${d.cut70}</text>
+  </svg>`;
 }
-
-/* ================= 시작 ================= */
-loadData();
 </script>
 </body>
 </html>
