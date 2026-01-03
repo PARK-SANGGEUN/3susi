@@ -1,1326 +1,277 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>모두의 수시 3개년 입시결과 비교 온도계</title>
-  <meta name="theme-color" content="#f6f0ff" />
-  <style>
-    :root{
-      --bg1:#f6f0ff;
-      --bg2:#fff7f0;
-      --card:#ffffffcc;
-      --stroke:#e6e8f0;
-      --text:#111827;
-      --muted:#6b7280;
-      --shadow: 0 20px 60px rgba(15, 23, 42, .12);
-      --shadow2: 0 12px 30px rgba(15, 23, 42, .10);
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>모두의 수시 3개년 입시결과 비교 온도계</title>
 
-      --brandA:#7c3aed; /* 보라 */
-      --brandB:#f59e0b; /* 노랑/주황 */
-      --brandC:#ef4444; /* 빨강 */
-      --brandD:#2563eb; /* 파랑 */
-
-      --chipBlue: linear-gradient(135deg,#2563eb,#60a5fa);
-      --chipOrange: linear-gradient(135deg,#f59e0b,#fb7185);
-      --chipPurple: linear-gradient(135deg,#7c3aed,#c084fc);
-
-      --good:#2563eb;  /* 파랑 */
-      --mid:#f59e0b;   /* 노랑 */
-      --bad:#ef4444;   /* 빨강 */
-
-      --radius: 26px;
-    }
-
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 500px at 20% 0%, rgba(124,58,237,.18), transparent 60%),
-        radial-gradient(1200px 500px at 80% 10%, rgba(245,158,11,.18), transparent 60%),
-        radial-gradient(900px 600px at 50% 70%, rgba(239,68,68,.14), transparent 60%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-      min-height:100vh;
-    }
-
-    .wrap{
-      max-width: 1200px;
-      margin: 24px auto 80px;
-      padding: 0 16px;
-    }
-
-    .hero{
-      background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.72));
-      border:1px solid var(--stroke);
-      border-radius: 32px;
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-    .hero-inner{
-      padding: 26px 26px 18px;
-    }
-
-    .titleRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-    h1{
-      margin:0;
-      font-size: clamp(22px, 3.2vw, 36px);
-      letter-spacing:-.02em;
-      line-height:1.15;
-    }
-    .sub{
-      margin:8px 0 0;
-      font-weight:800;
-      font-size: 16px;
-    }
-
-    .sourceBadge{
-      margin-top: 8px;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: linear-gradient(135deg,#fde68a,#fb7185);
-      color:#111827;
-      font-weight:800;
-      box-shadow: 0 12px 24px rgba(245,158,11,.25);
-      border: 1px solid rgba(0,0,0,.05);
-      white-space:nowrap;
-    }
-    .sourceDot{
-      width:10px;height:10px;border-radius:50%;
-      background: radial-gradient(circle at 30% 30%, #fff, #fb7185 60%, #f59e0b);
-      box-shadow: 0 0 0 3px rgba(255,255,255,.5);
-    }
-
-    .tipsRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top: 14px;
-    }
-    .tip{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding:10px 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.75);
-      border:1px solid var(--stroke);
-      color: var(--text);
-      font-weight:700;
-      box-shadow: var(--shadow2);
-    }
-    .tip b{font-weight:900}
-    .tip small{color:var(--muted);font-weight:700}
-    .spark{
-      width:18px;height:18px;border-radius:6px;
-      background: var(--chipPurple);
-      display:inline-flex;align-items:center;justify-content:center;
-      color:white;
-      font-size:12px;
-      box-shadow: 0 10px 20px rgba(124,58,237,.25);
-    }
-
-    .controlCard{
-      margin-top: 18px;
-      background: rgba(248,250,252,.75);
-      border-top: 1px solid var(--stroke);
-      padding: 18px 20px 22px;
-    }
-    .controlGrid{
-      display:grid;
-      grid-template-columns: 1.1fr 1.1fr .75fr 1.25fr auto auto;
-      gap: 14px;
-      align-items:end;
-    }
-    .field{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-width: 0;
-    }
-    .label{
-      font-weight:900;
-      font-size: 12px;
-      color: #374151;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    .bubbleNum{
-      width:20px;height:20px;border-radius:10px;
-      display:inline-flex;align-items:center;justify-content:center;
-      color:white;font-weight:900;font-size:12px;
-      background: var(--chipPurple);
-      box-shadow: 0 10px 18px rgba(124,58,237,.18);
-    }
-    select{
-      width:100%;
-      padding: 14px 14px;
-      border-radius: 16px;
-      border:1px solid #dbe3ef;
-      background: rgba(255,255,255,.92);
-      box-shadow: 0 10px 18px rgba(15,23,42,.06);
-      font-size: 14px;
-      outline:none;
-      font-weight:800;
-      color: var(--text);
-    }
-    select:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-      background: rgba(255,255,255,.6);
-    }
-
-    .btnRow{
-      display:flex;gap:10px;align-items:center;justify-content:flex-end;
-    }
-    .btn{
-      border:none;
-      border-radius: 16px;
-      padding: 14px 16px;
-      font-weight: 900;
-      cursor:pointer;
-      transition: transform .08s ease, filter .12s ease;
-      box-shadow: 0 18px 30px rgba(15,23,42,.12);
-      white-space:nowrap;
-    }
-    .btn:active{transform: translateY(1px) scale(.99)}
-    .btn.primary{
-      background: linear-gradient(135deg,#fcd34d,#f59e0b);
-      color:#111827;
-    }
-    .btn.ghost{
-      background: rgba(255,255,255,.85);
-      border:1px solid var(--stroke);
-      color:#111827;
-    }
-
-    .compareWrap{
-      padding: 18px 20px 24px;
-    }
-    .compareHead{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.7);
-      border: 1px solid var(--stroke);
-      box-shadow: var(--shadow2);
-    }
-    .compareTitle{
-      display:flex;align-items:center;gap:10px;
-      font-weight: 950;
-      letter-spacing:-.01em;
-    }
-    .pin{
-      width:28px;height:28px;border-radius:14px;
-      background: linear-gradient(135deg,#fff,#fde68a);
-      display:inline-flex;align-items:center;justify-content:center;
-      border:1px solid rgba(0,0,0,.05);
-      box-shadow: 0 12px 20px rgba(245,158,11,.20);
-    }
-    .compareNote{
-      color: var(--muted);
-      font-weight: 800;
-      font-size: 13px;
-      line-height:1.4;
-    }
-
-    .cards{
-      margin-top: 14px;
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-    .card{
-      border-radius: 22px;
-      background: rgba(255,255,255,.88);
-      border: 1px solid var(--stroke);
-      box-shadow: var(--shadow2);
-      overflow:hidden;
-      min-width:0;
-    }
-    .cardTop{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-      padding: 14px 14px 10px;
-      background:
-        radial-gradient(900px 240px at 20% 0%, rgba(124,58,237,.14), transparent 60%),
-        radial-gradient(900px 240px at 80% 0%, rgba(245,158,11,.14), transparent 60%),
-        linear-gradient(180deg, rgba(248,250,252,.88), rgba(255,255,255,.88));
-      border-bottom: 1px solid rgba(226,232,240,.9);
-    }
-    .cardTop h3{
-      margin:0;
-      font-size: 15px;
-      font-weight: 950;
-      letter-spacing:-.02em;
-      line-height:1.25;
-    }
-    .meta{
-      margin-top:6px;
-      display:flex;flex-wrap:wrap;gap:8px;
-    }
-    .pill{
-      display:inline-flex;align-items:center;gap:8px;
-      font-weight: 900;
-      font-size: 12px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,.06);
-      background: rgba(255,255,255,.75);
-      color:#111827;
-      white-space:nowrap;
-    }
-    .pill.track-kyo{ background: rgba(37,99,235,.10); border-color: rgba(37,99,235,.18); }
-    .pill.track-jong{ background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.22); }
-    .pill small{font-weight:900;color:var(--muted)}
-
-    .del{
-      border:none;
-      background: rgba(17,24,39,.06);
-      color:#111827;
-      font-weight: 950;
-      border-radius: 14px;
-      width: 38px;height: 38px;
-      cursor:pointer;
-      display:inline-flex;align-items:center;justify-content:center;
-      transition: background .15s ease, transform .08s ease;
-    }
-    .del:hover{background: rgba(239,68,68,.16)}
-    .del:active{transform: translateY(1px) scale(.99)}
-
-    .cardBody{
-      padding: 12px 14px 14px;
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 12px;
-      align-items: start;
-    }
-
-    .tbl{
-      width:100%;
-      border-collapse:separate;
-      border-spacing:0;
-      overflow:hidden;
-      border-radius: 16px;
-      border: 1px solid rgba(226,232,240,.9);
-      background: rgba(255,255,255,.9);
-    }
-    .tbl th, .tbl td{
-      padding: 10px 10px;
-      font-size: 12.5px;
-      font-weight: 900;
-      text-align:center;
-      border-bottom: 1px solid rgba(226,232,240,.85);
-      white-space:nowrap;
-    }
-    .tbl th{
-      background:
-        linear-gradient(90deg, rgba(37,99,235,.10), rgba(124,58,237,.10), rgba(245,158,11,.10));
-      color:#111827;
-      letter-spacing:-.01em;
-    }
-    .tbl tr:last-child td{border-bottom:none}
-    .y2025 td{
-      background: linear-gradient(90deg, rgba(253,230,138,.45), rgba(251,113,133,.22));
-      box-shadow: inset 0 0 0 999px rgba(255,255,255,.0);
-    }
-
-    .thermoWrap{
-      display:flex;
-      flex-direction:column;
-      gap: 10px;
-      align-items:center;
-      justify-content:flex-start;
-      padding: 2px 0 0;
-      min-width: 0;
-    }
-
-    .legend{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap: 8px;
-      flex-wrap:wrap;
-      font-size: 11.5px;
-      color: var(--muted);
-      font-weight: 900;
-      text-align:center;
-      line-height:1.2;
-    }
-    .dot{
-      width:10px;height:10px;border-radius:50%;
-      background: var(--chipBlue);
-      box-shadow: 0 0 0 3px rgba(37,99,235,.10);
-    }
-    .dot.mid{ background: linear-gradient(135deg,#fcd34d,#f59e0b); box-shadow: 0 0 0 3px rgba(245,158,11,.12); }
-    .dot.bad{ background: linear-gradient(135deg,#fb7185,#ef4444); box-shadow: 0 0 0 3px rgba(239,68,68,.12); }
-
-    .empty{
-      margin-top: 14px;
-      padding: 16px;
-      border-radius: 22px;
-      border: 1px dashed rgba(148,163,184,.65);
-      background: rgba(255,255,255,.55);
-      color: var(--muted);
-      font-weight: 900;
-      text-align:center;
-    }
-
-    /* Loading overlay */
-    .loadingOverlay{
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(1200px 600px at 30% 0%, rgba(124,58,237,.22), transparent 60%),
-                  radial-gradient(1200px 600px at 70% 10%, rgba(245,158,11,.18), transparent 60%),
-                  rgba(255,255,255,.55);
-      backdrop-filter: blur(10px);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-      z-index: 9999;
-    }
-    .loadingCard{
-      width: min(520px, 95vw);
-      border-radius: 26px;
-      background: rgba(255,255,255,.88);
-      border: 1px solid rgba(226,232,240,.9);
-      box-shadow: var(--shadow);
-      padding: 18px 18px 16px;
-    }
-    .loadingTop{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap: 14px;
-      margin-bottom: 12px;
-    }
-    .spinner{
-      width: 42px; height: 42px;
-      border-radius: 999px;
-      border: 4px solid rgba(124,58,237,.18);
-      border-top-color: rgba(124,58,237,.75);
-      animation: spin 1s linear infinite;
-    }
-    @keyframes spin{to{transform:rotate(360deg)}}
-
-    .loadingTitle{
-      font-weight: 950;
-      font-size: 15px;
-      letter-spacing:-.01em;
-      margin: 0;
-    }
-    .loadingSub{
-      margin: 6px 0 0;
-      color: var(--muted);
-      font-weight: 900;
-      font-size: 12.5px;
-      line-height:1.35;
-    }
-    .progress{
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(226,232,240,.9);
-      overflow:hidden;
-      border: 1px solid rgba(226,232,240,.9);
-    }
-    .bar{
-      height:100%;
-      width: 0%;
-      background: linear-gradient(90deg, #2563eb, #7c3aed, #f59e0b, #ef4444);
-      transition: width .18s ease;
-    }
-    .pct{
-      display:flex;align-items:center;justify-content:space-between;
-      margin-top: 10px;
-      font-weight: 950;
-      font-size: 12px;
-      color: #111827;
-    }
-    .pct span:last-child{color: var(--muted); font-weight: 900;}
-
-    .footNote{
-      margin-top: 10px;
-      text-align:center;
-      color: var(--muted);
-      font-weight: 900;
-      font-size: 12px;
-    }
-
-    /* Responsive */
-    @media (max-width: 980px){
-      .controlGrid{
-        grid-template-columns: 1fr 1fr;
-      }
-      .btnRow{justify-content:flex-start}
-      .cards{grid-template-columns: 1fr;}
-      .cardBody{grid-template-columns: 1fr;}
-      .compareHead{gap:8px}
-    }
-    @media (max-width: 520px){
-      .hero-inner{padding: 20px 16px 14px}
-      .controlCard{padding: 16px 14px 18px}
-      .compareWrap{padding: 14px}
-    }
-  </style>
+<style>
+:root{
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --primary:#ffb703;
+  --blue:#4dabf7;
+  --yellow:#ffd43b;
+  --red:#ff6b6b;
+  --gray:#dee2e6;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: Pretendard, Apple SD Gothic Neo, sans-serif;
+  background:linear-gradient(180deg,#f3f4ff,#fff);
+}
+.container{
+  max-width:1200px;
+  margin:40px auto;
+  padding:24px;
+}
+.card{
+  background:var(--card);
+  border-radius:20px;
+  padding:32px;
+  box-shadow:0 20px 40px rgba(0,0,0,.08);
+}
+h1{margin:0;font-size:28px}
+.subtitle{margin-top:6px;font-weight:600}
+.badge{
+  display:inline-block;
+  margin-top:14px;
+  padding:8px 14px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#ffd43b,#ff6b6b);
+  font-weight:700;
+}
+.guide{
+  margin-top:16px;
+  background:#f1f3f5;
+  padding:12px 16px;
+  border-radius:12px;
+  font-size:14px;
+}
+.selects{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:12px;
+  margin-top:20px;
+}
+select,button{
+  padding:14px;
+  border-radius:12px;
+  border:1px solid var(--gray);
+  font-size:15px;
+}
+button.primary{
+  background:var(--primary);
+  border:none;
+  font-weight:700;
+  cursor:pointer;
+}
+button:disabled,select:disabled{
+  opacity:.5;
+}
+.progress-wrap{
+  margin-top:24px;
+  display:none;
+}
+.progress{
+  height:8px;
+  background:#e9ecef;
+  border-radius:8px;
+  overflow:hidden;
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#4dabf7,#ff6b6b);
+  transition:width .4s;
+}
+.loading-text{
+  margin-top:8px;
+  font-size:13px;
+  color:#555;
+}
+.compare-area{
+  margin-top:30px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+.compare-card{
+  background:#fff;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 10px 20px rgba(0,0,0,.06);
+  position:relative;
+}
+.remove{
+  position:absolute;
+  top:12px;
+  right:14px;
+  cursor:pointer;
+  font-weight:900;
+}
+.thermo{
+  margin-top:16px;
+  height:220px;
+}
+@media(max-width:600px){
+  h1{font-size:22px}
+}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <section class="hero">
-      <div class="hero-inner">
-        <div class="titleRow">
-          <div>
-            <h1>모두의 수시 3개년 입시결과 비교 온도계</h1>
-            <div class="sub">Copyright@All Teachers</div>
-            <div class="sourceBadge" aria-label="출처">
-              <span class="sourceDot"></span>
-              <span>출처: 어디가 3개년 입시결과</span>
-            </div>
-          </div>
+<div class="container">
+  <div class="card">
+    <h1>모두의 수시 3개년 입시결과 비교 온도계</h1>
+    <div class="subtitle">Copyright@All Teachers</div>
+    <div class="badge">출처 : 어디가 3개년 입시결과</div>
 
-          <div class="tipsRow">
-            <div class="tip">
-              <span class="spark">⚡</span>
-              <div>
-                <div><b>초고속</b> 드롭다운 · <b>최대 3개</b> 비교</div>
-                <small>캐시 + 백그라운드 갱신</small>
-              </div>
-            </div>
-            <div class="tip">
-              <span class="spark">📌</span>
-              <div>
-                <div><b>표 + 온도계</b>는 <b>2025→2024→2023</b> 순</div>
-                <small>2025 데이터는 강조 표시</small>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="controlCard">
-        <div class="controlGrid">
-          <div class="field">
-            <div class="label"><span class="bubbleNum">1</span> 대학 선택</div>
-            <select id="selUniv" disabled>
-              <option>로딩 중…</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <div class="label"><span class="bubbleNum">2</span> 모집단위 선택 (D열)</div>
-            <select id="selMajor" disabled>
-              <option>대학을 먼저 선택하세요</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <div class="label"><span class="bubbleNum">3</span> 전형 선택 (교과/종합)</div>
-            <select id="selTrack" disabled>
-              <option>모집단위를 먼저 선택하세요</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <div class="label"><span class="bubbleNum">4</span> 세부전형 선택 (C열)</div>
-            <select id="selType" disabled>
-              <option>전형을 먼저 선택하세요</option>
-            </select>
-          </div>
-
-          <button class="btn primary" id="btnAdd" disabled>비교 추가 (최대 3)</button>
-          <button class="btn ghost" id="btnReset">선택 초기화</button>
-        </div>
-      </div>
-
-      <div class="compareWrap">
-        <div class="compareHead">
-          <div class="compareTitle">
-            <span class="pin">📌</span>
-            <span>선택한 전형 비교 (최대 3개)</span>
-          </div>
-          <div class="compareNote">
-            • 비교 추가로 3개까지 누적<br/>
-            • 삭제(×) 가능 · 새로고침해도 유지
-          </div>
-        </div>
-
-        <div id="cards" class="cards"></div>
-        <div id="empty" class="empty">위에서 순서대로 선택 후 <b>비교 추가</b>를 눌러주세요.</div>
-
-        <div class="footNote">
-          ※ cut(50/70)은 제공된 데이터만 표시됩니다. 누락 값은 “—”로 표시됩니다.
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- Loading overlay -->
-  <div id="loading" class="loadingOverlay" style="display:none">
-    <div class="loadingCard">
-      <div class="loadingTop">
-        <div>
-          <p class="loadingTitle">데이터 준비 중입니다…</p>
-          <p class="loadingSub" id="loadingMsg">전국 대학 데이터를 불러오고 있어요. (처음 1회는 조금 더 걸릴 수 있어요)</p>
-        </div>
-        <div class="spinner" aria-hidden="true"></div>
-      </div>
-      <div class="progress"><div id="bar" class="bar"></div></div>
-      <div class="pct">
-        <span id="pct">0%</span>
-        <span id="eta">예상: 약 2~6초</span>
-      </div>
+    <div class="guide">
+      ① 대학 → ② 모집단위 → ③ 전형 → ④ 세부전형 선택<br>
+      최대 3개 비교 가능 · 2025년 데이터 강조
     </div>
+
+    <div class="selects">
+      <select id="univ" disabled><option>로딩 중...</option></select>
+      <select id="dept" disabled><option>모집단위</option></select>
+      <select id="track" disabled><option>전형</option></select>
+      <select id="detail" disabled><option>세부전형</option></select>
+      <button class="primary" id="addBtn" disabled>비교 추가 (최대 3)</button>
+    </div>
+
+    <div class="progress-wrap" id="loader">
+      <div class="progress">
+        <div class="progress-bar" id="bar"></div>
+      </div>
+      <div class="loading-text" id="loadingText">데이터 불러오는 중...</div>
+    </div>
+
+    <div class="compare-area" id="compareArea"></div>
   </div>
+</div>
 
 <script>
-/** =========================
- *  설정
- *  ========================= */
-const DATA_URL = "https://script.google.com/macros/s/AKfycbw4cVu8rVN-EjUv1XIBQ0xWAnv0Rd9gl4q-2Oyxa9vSOEcl0cqONZWAcqAMsDE4CxY/exec";
-const YEARS = ["2025","2024","2023"]; // 내부 고정
-const MAX_COMPARE = 3;
+/* ================= 기본 설정 ================= */
+const GAS_URL = "https://script.google.com/macros/s/AKfycbw4cVu8rVN-EjUv1XIBQ0xWAnv0Rd9gl4q-2Oyxa9vSOEcl0cqONZWAcqAMsDE4CxY/exec";
+const YEARS = [2025,2024,2023];
+const CACHE_KEY = "admissionDataV1";
+const CACHE_TIME = 1000*60*60*8;
 
-// 캐시
-const CACHE_DB = "admission_cache_db";
-const CACHE_STORE = "cache";
-const CACHE_KEY = "fullDataText_v1";
-const CACHE_MS = 1000 * 60 * 60 * 8; // 8시간
+/* ================= 상태 ================= */
+let DATA = null;
+let selected = [];
 
-// 선택 누적 저장
-const PICKS_KEY = "compare_picks_v1";
+/* ================= 로딩 UI ================= */
+const loader = document.getElementById("loader");
+const bar = document.getElementById("bar");
+const loadingText = document.getElementById("loadingText");
 
-// 전역 데이터(파싱 결과)
-let DATA = null; // 원본(객체)
-let INDEX = null; // 드롭다운 인덱스 {univs:[], majorsByUniv:Map, tracksByUnivMajor:Map, typesByUnivMajorTrack:Map}
-
-// UI
-const elLoading = document.getElementById("loading");
-const elBar = document.getElementById("bar");
-const elPct = document.getElementById("pct");
-const elEta = document.getElementById("eta");
-const elMsg = document.getElementById("loadingMsg");
-
-const selUniv = document.getElementById("selUniv");
-const selMajor = document.getElementById("selMajor");
-const selTrack = document.getElementById("selTrack");
-const selType = document.getElementById("selType");
-const btnAdd = document.getElementById("btnAdd");
-const btnReset = document.getElementById("btnReset");
-
-const cards = document.getElementById("cards");
-const empty = document.getElementById("empty");
-
-/** =========================
- *  로딩 UI
- *  ========================= */
-let fakeTimer = null;
-let fakeP = 0;
-
-function showLoading(msg="데이터 준비 중입니다…", eta="예상: 약 2~6초"){
-  elMsg.textContent = msg;
-  elEta.textContent = eta;
-  elLoading.style.display = "flex";
-  setProgress(1);
-  startFakeProgress();
+function showLoader(){
+  loader.style.display="block";
+  let p=0;
+  const t=setInterval(()=>{
+    p=Math.min(p+5,90);
+    bar.style.width=p+"%";
+  },300);
+  loader._t=t;
+}
+function hideLoader(){
+  clearInterval(loader._t);
+  bar.style.width="100%";
+  setTimeout(()=>loader.style.display="none",500);
 }
 
-function hideLoading(){
-  stopFakeProgress();
-  setProgress(100);
-  setTimeout(()=>{ elLoading.style.display = "none"; }, 120);
-}
-
-function setProgress(p){
-  const clamped = Math.max(0, Math.min(100, p));
-  elBar.style.width = clamped + "%";
-  elPct.textContent = clamped + "%";
-}
-
-function startFakeProgress(){
-  stopFakeProgress();
-  fakeP = 1;
-  fakeTimer = setInterval(()=>{
-    // 0~70까지는 빠르게, 그 이후는 느리게(실제 다운로드/파싱 대기)
-    if(fakeP < 25) fakeP += 2.2;
-    else if(fakeP < 55) fakeP += 1.4;
-    else if(fakeP < 72) fakeP += 0.6;
-    else if(fakeP < 88) fakeP += 0.25;
-    else fakeP += 0.08;
-
-    setProgress(Math.floor(fakeP));
-  }, 120);
-}
-
-function stopFakeProgress(){
-  if(fakeTimer) clearInterval(fakeTimer);
-  fakeTimer = null;
-}
-
-/** =========================
- *  IndexedDB 캐시 (대용량 안전)
- *  ========================= */
-function idbOpen(){
-  return new Promise((resolve, reject)=>{
-    const req = indexedDB.open(CACHE_DB, 1);
-    req.onupgradeneeded = () => {
-      const db = req.result;
-      if(!db.objectStoreNames.contains(CACHE_STORE)){
-        db.createObjectStore(CACHE_STORE);
-      }
-    };
-    req.onsuccess = ()=>resolve(req.result);
-    req.onerror = ()=>reject(req.error);
-  });
-}
-
-async function idbGet(key){
-  try{
-    const db = await idbOpen();
-    return await new Promise((resolve, reject)=>{
-      const tx = db.transaction(CACHE_STORE, "readonly");
-      const store = tx.objectStore(CACHE_STORE);
-      const req = store.get(key);
-      req.onsuccess = ()=>resolve(req.result || null);
-      req.onerror = ()=>reject(req.error);
-    });
-  }catch(e){
-    return null;
-  }
-}
-
-async function idbSet(key, value){
-  try{
-    const db = await idbOpen();
-    return await new Promise((resolve, reject)=>{
-      const tx = db.transaction(CACHE_STORE, "readwrite");
-      const store = tx.objectStore(CACHE_STORE);
-      const req = store.put(value, key);
-      req.onsuccess = ()=>resolve(true);
-      req.onerror = ()=>reject(req.error);
-    });
-  }catch(e){
-    return false;
-  }
-}
-
-/** =========================
- *  Worker: 대용량 JSON 파싱 + 인덱싱(드롭다운용)
- *  ========================= */
-const workerSrc = `
-self.onmessage = (e) => {
-  const { text } = e.data;
-  try{
-    // 파싱
-    self.postMessage({t:"progress", p:78, msg:"데이터 파싱 중…"});
-    const obj = JSON.parse(text);
-
-    // 인덱스 생성
-    self.postMessage({t:"progress", p:88, msg:"드롭다운 인덱스 생성 중…"});
-    const years = ["2025","2024","2023"];
-    const univSet = new Set();
-
-    // majorsByUniv: {univ -> Set(major)}
-    const majorsByUniv = new Map();
-    // tracksByUnivMajor: {univ|major -> Set(track)}
-    const tracksByKey = new Map();
-    // typesByUnivMajorTrack: {univ|major|track -> Set(type)}
-    const typesByKey = new Map();
-
-    for(const y of years){
-      const yObj = obj[y];
-      if(!yObj) continue;
-      for(const univ of Object.keys(yObj)){
-        univSet.add(univ);
-        const majorsObj = yObj[univ] || {};
-        for(const major of Object.keys(majorsObj)){
-          if(!majorsByUniv.has(univ)) majorsByUniv.set(univ, new Set());
-          majorsByUniv.get(univ).add(major);
-
-          const tracksObj = majorsObj[major] || {};
-          for(const track of Object.keys(tracksObj)){
-            const k1 = univ + "||" + major;
-            if(!tracksByKey.has(k1)) tracksByKey.set(k1, new Set());
-            tracksByKey.get(k1).add(track);
-
-            const typesObj = tracksObj[track] || {};
-            for(const type of Object.keys(typesObj)){
-              const k2 = univ + "||" + major + "||" + track;
-              if(!typesByKey.has(k2)) typesByKey.set(k2, new Set());
-              typesByKey.get(k2).add(type);
-            }
-          }
-        }
-      }
-    }
-
-    const univs = Array.from(univSet).sort((a,b)=>a.localeCompare(b,"ko"));
-    const majorsPacked = {};
-    for(const [u,set] of majorsByUniv.entries()){
-      majorsPacked[u] = Array.from(set).sort((a,b)=>a.localeCompare(b,"ko"));
-    }
-    const tracksPacked = {};
-    for(const [k,set] of tracksByKey.entries()){
-      tracksPacked[k] = Array.from(set).sort((a,b)=>a.localeCompare(b,"ko"));
-    }
-    const typesPacked = {};
-    for(const [k,set] of typesByKey.entries()){
-      typesPacked[k] = Array.from(set).sort((a,b)=>a.localeCompare(b,"ko"));
-    }
-
-    self.postMessage({t:"done", obj, index:{univs, majorsPacked, tracksPacked, typesPacked}});
-  }catch(err){
-    self.postMessage({t:"err", err: String(err)});
-  }
-};
-`;
-
-function makeWorker(){
-  const blob = new Blob([workerSrc], {type:"application/javascript"});
-  const url = URL.createObjectURL(blob);
-  return new Worker(url);
-}
-
-/** =========================
- *  데이터 로딩 (캐시 우선 + 백그라운드 갱신)
- *  ========================= */
-async function fetchTextWithTimeout(url, ms=45000){
-  const ctrl = new AbortController();
-  const id = setTimeout(()=>ctrl.abort(), ms);
-  const res = await fetch(url, {signal: ctrl.signal, cache:"no-store"});
-  clearTimeout(id);
-  if(!res.ok) throw new Error("HTTP " + res.status);
-  return await res.text();
-}
-
+/* ================= 데이터 로드 ================= */
 async function loadData(){
-  showLoading("데이터 준비 중입니다… (처음 1회는 조금 더 걸릴 수 있어요)", "예상: 약 2~6초");
+  showLoader();
 
-  // 1) 캐시 확인
-  setProgress(8);
-  const cached = await idbGet(CACHE_KEY);
-  if(cached && cached.ts && cached.text && (Date.now()-cached.ts) < CACHE_MS){
-    // 캐시 즉시 사용(체감 속도 최상)
-    setProgress(40);
-    await parseInWorker(cached.text);
-    hideLoading();
-
-    // 백그라운드 갱신
-    refreshInBackground();
-    return;
+  const cached = localStorage.getItem(CACHE_KEY);
+  if(cached){
+    const {time,data}=JSON.parse(cached);
+    if(Date.now()-time<CACHE_TIME){
+      DATA=data;
+      hideLoader();
+      initUI();
+      return;
+    }
   }
 
-  // 2) 최초/만료: 서버에서 로딩
-  try{
-    setProgress(18);
-    elMsg.textContent = "서버에서 최신 데이터를 불러오고 있어요…";
-    elEta.textContent = "예상: 약 4~12초 (초기 1회)";
-    const text = await fetchTextWithTimeout(DATA_URL);
+  const res = await fetch(GAS_URL);
+  const json = await res.json();
 
-    setProgress(72);
-    await idbSet(CACHE_KEY, {ts: Date.now(), text});
-    await parseInWorker(text);
-
-    hideLoading();
-  }catch(e){
-    stopFakeProgress();
-    setProgress(100);
-    elMsg.textContent = "데이터 로딩에 실패했어요. (GAS CORS/권한/응답 형식 확인 필요)";
-    elEta.textContent = "새로고침(F5) 또는 잠시 후 재시도";
-    console.error(e);
-  }
+  DATA=json;
+  localStorage.setItem(CACHE_KEY,JSON.stringify({time:Date.now(),data:json}));
+  hideLoader();
+  initUI();
 }
 
-async function refreshInBackground(){
-  try{
-    const text = await fetchTextWithTimeout(DATA_URL);
-    await idbSet(CACHE_KEY, {ts: Date.now(), text});
-    // 다음 새로고침부터 더 최신 데이터 사용
-  }catch(e){
-    // 조용히 무시(사용자는 캐시로 이미 사용 중)
-  }
-}
-
-function parseInWorker(text){
-  return new Promise((resolve, reject)=>{
-    const w = makeWorker();
-    w.onmessage = (e)=>{
-      const msg = e.data;
-      if(msg.t === "progress"){
-        setProgress(msg.p);
-        if(msg.msg) elMsg.textContent = msg.msg;
-      }
-      if(msg.t === "done"){
-        DATA = msg.obj;
-        INDEX = msg.index;
-        w.terminate();
-        buildDropdowns();
-        restorePicksAndRender();
-        resolve(true);
-      }
-      if(msg.t === "err"){
-        w.terminate();
-        reject(new Error(msg.err));
-      }
-    };
-    w.postMessage({text});
+/* ================= UI 초기화 ================= */
+function initUI(){
+  const univSel=document.getElementById("univ");
+  univSel.innerHTML='<option value="">대학 선택</option>';
+  Object.keys(DATA[2025]).forEach(u=>{
+    univSel.add(new Option(u,u));
   });
+  enable(univSel);
 }
 
-/** =========================
- *  드롭다운 구성
- *  ========================= */
-function understandTrackClass(track){
-  // 교과/종합 색감 분리
-  if(!track) return "";
-  if(String(track).includes("교과")) return "kyo";
-  if(String(track).includes("종합")) return "jong";
-  // 시트 값이 "교과", "종합" 형태라면
-  if(String(track).trim()==="교과") return "kyo";
-  if(String(track).trim()==="종합") return "jong";
-  return "";
-}
+/* ================= 헬퍼 ================= */
+function enable(el){el.disabled=false}
+function disable(el){el.disabled=true}
 
-function fillSelect(select, items, placeholder="선택"){
-  select.innerHTML = "";
-  const opt0 = document.createElement("option");
-  opt0.value = "";
-  opt0.textContent = placeholder;
-  select.appendChild(opt0);
+/* ================= 이벤트 ================= */
+document.getElementById("univ").onchange=e=>{
+  const u=e.target.value;
+  const dept=document.getElementById("dept");
+  dept.innerHTML='<option value="">모집단위</option>';
+  if(!u)return;
+  Object.keys(DATA[2025][u]).forEach(d=>dept.add(new Option(d,d)));
+  enable(dept);
+};
 
-  for(const it of items){
-    const opt = document.createElement("option");
-    opt.value = it;
-    opt.textContent = it;
-    select.appendChild(opt);
-  }
-}
+document.getElementById("dept").onchange=e=>{
+  const u=univ.value,d=e.target.value;
+  const track=document.getElementById("track");
+  track.innerHTML='<option value="">전형</option>';
+  if(!d)return;
+  Object.keys(DATA[2025][u][d]).forEach(t=>track.add(new Option(t,t)));
+  enable(track);
+};
 
-function buildDropdowns(){
-  // 1) 대학
-  fillSelect(selUniv, INDEX.univs, "대학 선택");
-  selUniv.disabled = false;
+document.getElementById("track").onchange=e=>{
+  const u=univ.value,d=dept.value,t=e.target.value;
+  const det=document.getElementById("detail");
+  det.innerHTML='<option value="">세부전형</option>';
+  if(!t)return;
+  Object.keys(DATA[2025][u][d][t]).forEach(x=>det.add(new Option(x,x)));
+  enable(det);
+  enable(addBtn);
+};
 
-  // 초기 상태
-  selMajor.disabled = true;
-  selTrack.disabled = true;
-  selType.disabled = true;
-  btnAdd.disabled = true;
-
-  // 이벤트
-  selUniv.onchange = ()=>{
-    const u = selUniv.value;
-    if(!u){
-      selMajor.disabled = true; selTrack.disabled = true; selType.disabled = true; btnAdd.disabled = true;
-      selMajor.innerHTML = "<option>대학을 먼저 선택하세요</option>";
-      selTrack.innerHTML = "<option>모집단위를 먼저 선택하세요</option>";
-      selType.innerHTML = "<option>전형을 먼저 선택하세요</option>";
-      return;
-    }
-    const majors = INDEX.majorsPacked[ u ] || [];
-    fillSelect(selMajor, majors, "모집단위 선택");
-    selMajor.disabled = false;
-
-    // reset down
-    selTrack.disabled = true; selType.disabled = true; btnAdd.disabled = true;
-    selTrack.innerHTML = "<option>모집단위를 먼저 선택하세요</option>";
-    selType.innerHTML = "<option>전형을 먼저 선택하세요</option>";
-  };
-
-  selMajor.onchange = ()=>{
-    const u = selUniv.value;
-    const m = selMajor.value;
-    if(!u || !m){
-      selTrack.disabled = true; selType.disabled = true; btnAdd.disabled = true;
-      selTrack.innerHTML = "<option>모집단위를 먼저 선택하세요</option>";
-      selType.innerHTML = "<option>전형을 먼저 선택하세요</option>";
-      return;
-    }
-    const key = u + "||" + m;
-    const tracks = (INDEX.tracksPacked[key] || []).slice();
-    // track 정렬: 교과 먼저, 종합 다음, 그 외
-    tracks.sort((a,b)=>{
-      const ra = (String(a).includes("교과")||String(a).trim()==="교과") ? 0 : (String(a).includes("종합")||String(a).trim()==="종합") ? 1 : 2;
-      const rb = (String(b).includes("교과")||String(b).trim()==="교과") ? 0 : (String(b).includes("종합")||String(b).trim()==="종합") ? 1 : 2;
-      return ra-rb || a.localeCompare(b,"ko");
-    });
-    fillSelect(selTrack, tracks, "전형 선택");
-    selTrack.disabled = false;
-
-    selType.disabled = true; btnAdd.disabled = true;
-    selType.innerHTML = "<option>전형을 먼저 선택하세요</option>";
-  };
-
-  selTrack.onchange = ()=>{
-    const u = selUniv.value;
-    const m = selMajor.value;
-    const t = selTrack.value;
-    if(!u || !m || !t){
-      selType.disabled = true; btnAdd.disabled = true;
-      selType.innerHTML = "<option>전형을 먼저 선택하세요</option>";
-      return;
-    }
-    const key = u + "||" + m + "||" + t;
-    const types = INDEX.typesPacked[key] || [];
-    fillSelect(selType, types, "세부전형 선택");
-    selType.disabled = false;
-    btnAdd.disabled = false;
-  };
-
-  selType.onchange = ()=>{
-    btnAdd.disabled = !(selUniv.value && selMajor.value && selTrack.value && selType.value);
-  };
-
-  btnAdd.onclick = ()=>{
-    const pick = {
-      univ: selUniv.value,
-      major: selMajor.value,
-      track: selTrack.value,
-      type: selType.value
-    };
-    addPick(pick);
-  };
-
-  btnReset.onclick = ()=>{
-    selUniv.value = "";
-    selUniv.dispatchEvent(new Event("change"));
-  };
-}
-
-/** =========================
- *  Pick(비교 카드) 저장/렌더
- *  ========================= */
-function loadPicks(){
-  try{
-    const raw = localStorage.getItem(PICKS_KEY);
-    const arr = raw ? JSON.parse(raw) : [];
-    if(Array.isArray(arr)) return arr;
-    return [];
-  }catch(e){ return []; }
-}
-
-function savePicks(arr){
-  localStorage.setItem(PICKS_KEY, JSON.stringify(arr));
-}
-
-function pickKey(p){ return [p.univ,p.major,p.track,p.type].join("||"); }
-
-function addPick(p){
-  let arr = loadPicks();
-  const k = pickKey(p);
-  if(arr.some(x=>pickKey(x)===k)){
-    // 이미 있음
-    renderCards(arr);
-    return;
-  }
-  if(arr.length >= MAX_COMPARE){
-    alert("최대 3개까지 비교할 수 있어요. 기존 항목을 삭제한 뒤 추가해주세요.");
-    return;
-  }
-  arr.push(p);
-  savePicks(arr);
-  renderCards(arr);
-}
-
-function removePick(k){
-  let arr = loadPicks().filter(x=>pickKey(x)!==k);
-  savePicks(arr);
-  renderCards(arr);
-}
-
-function restorePicksAndRender(){
-  renderCards(loadPicks());
-}
-
-/** =========================
- *  데이터 추출 유틸
- *  ========================= */
-function getRecord(year, p){
-  // 기대 구조: DATA[year][univ][major][track][type] = {quota, ratio, rank, cut50, cut70}
-  try{
-    const y = DATA[year] || {};
-    const u = y[p.univ] || {};
-    const m = u[p.major] || {};
-    const tr = m[p.track] || {};
-    const rec = tr[p.type] || null;
-    return rec;
-  }catch(e){ return null; }
-}
-
-function fmt(v){
-  if(v===null || v===undefined) return "—";
-  const s = String(v).trim();
-  if(s==="" || s==="null" || s==="undefined") return "—";
-  return s;
-}
-
-function asNum(v){
-  const n = Number(String(v).replace(/,/g,"").trim());
-  return Number.isFinite(n) ? n : null;
-}
-
-/** =========================
- *  온도계 SVG (눈금+수치+색상) + 2025 강조
- *  - 등급: 1~9 (낮을수록 좋음)
- *  - 표시: 2025(강조), 2024, 2023
- *  ========================= */
-function clamp(x,a,b){ return Math.max(a, Math.min(b,x)); }
-
-// 등급값(1~9)을 0~1로 변환(상단=1등급)
-function gradeToT(g){
-  const v = clamp(g,1,9);
-  return 1 - ((v - 1) / 8); // 1등급 -> 1, 9등급 -> 0
-}
-
-// 색상: 파랑(좋음) -> 노랑(중간) -> 빨강(나쁨)
-function colorForGrade(g){
-  const v = clamp(g,1,9);
-  if(v <= 3.2) return "rgba(37,99,235,.95)";
-  if(v <= 5.8) return "rgba(245,158,11,.95)";
-  return "rgba(239,68,68,.95)";
-}
-
-function thermoSVG(valuesByYear){
-  // valuesByYear: {2025:{cut70}, 2024:{cut70}, 2023:{cut70}} (cut70 숫자)
-  const W = 150, H = 240;
-  const tubeX = 70, tubeY = 22, tubeW = 38, tubeH = 170;
-  const bulbR = 30;
-  const bulbCX = tubeX + tubeW/2, bulbCY = tubeY + tubeH + bulbR - 6;
-
-  // 눈금: 1~9
-  const ticks = [];
-  for(let g=1; g<=9 이해; g++){}
-
-  // 실제로 생성
-  const tickEls = [];
-  for(let g=1; g<=9; g++){
-    const t = gradeToT(g);
-    const y = tubeY + (1 - t) * tubeH; // 상단이 1등급
-    const isMajor = (g===1 || g===3 || g===5 || g===7 || g===9);
-    const len = isMajor ? 14 : 9;
-    tickEls.push(`
-      <line x1="${tubeX-4-len}" y1="${y}" x2="${tubeX-4}" y2="${y}"
-            stroke="rgba(17,24,39,${isMajor?0.55:0.25})" stroke-width="${isMajor?2:1.2}" />
-      ${isMajor ? `<text x="${tubeX-26}" y="${y+4}" font-size="11" font-weight="900" fill="rgba(17,24,39,.70)" text-anchor="end">${g}</text>` : ``}
-    `);
-  }
-
-  // 마커(연도별)
-  function marker(year, g, strong=false){
-    if(g===null) return "";
-    const t = gradeToT(g);
-    const y = tubeY + (1 - t) * tubeH;
-    const fill = colorForGrade(g);
-    const glow = strong ? `filter="url(#glow${year})"` : "";
-    const stroke = strong ? "rgba(17,24,39,.65)" : "rgba(17,24,39,.35)";
-    const sw = strong ? 2.2 : 1.4;
-
-    const badgeX = tubeX + tubeW + 10;
-    const badgeY = y - 12;
-
-    return `
-      <g ${glow}>
-        <line x1="${tubeX+tubeW}" y1="${y}" x2="${tubeX+tubeW+10}" y2="${y}"
-              stroke="${stroke}" stroke-width="${sw}" />
-        <circle cx="${tubeX+tubeW}" cy="${y}" r="${strong?5.2:4.2}"
-                fill="${fill}" stroke="${stroke}" stroke-width="${sw}" />
-        <g transform="translate(${badgeX},${badgeY})">
-          <rect x="0" y="0" rx="10" ry="10" width="${strong?66:60}" height="24"
-                fill="rgba(255,255,255,.92)" stroke="rgba(226,232,240,.95)" />
-          <text x="10" y="16" font-size="11" font-weight="950" fill="rgba(17,24,39,.8)">${year}</text>
-          <text x="${strong?58:52}" y="16" font-size="11" font-weight="950" fill="${fill}" text-anchor="end">${g.toFixed(2).replace(/\.00$/,'')}</text>
-        </g>
-      </g>
-    `;
-  }
-
-  const g25 = valuesByYear["2025"] ?? null;
-  const g24 = valuesByYear["2024"] ?? null;
-  const g23 = valuesByYear["2023"] ?? null;
-
-  // 채움(대표값=2025 > 없으면 2024 > 2023)
-  const gMain = (g25 ?? g24 ?? g23);
-  const tMain = (gMain===null) ? 0 : gradeToT(gMain);
-  const fillH = tubeH * tMain;
-  const fillY = tubeY + (tubeH - fillH);
-
+/* ================= 온도계 ================= */
+function thermo(value){
+  const pct=Math.max(0,Math.min(100,(10-value)*10));
   return `
-  <svg viewBox="0 0 ${W} ${H}" width="100%" height="auto" aria-label="온도계">
-    <defs>
-      <linearGradient id="gradFill" x1="0" y1="1" x2="0" y2="0">
-        <stop offset="0%" stop-color="rgba(239,68,68,.95)"/>
-        <stop offset="52%" stop-color="rgba(245,158,11,.95)"/>
-        <stop offset="100%" stop-color="rgba(37,99,235,.95)"/>
-      </linearGradient>
-
-      <filter id="softShadow" x="-40%" y="-40%" width="180%" height="180%">
-        <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="rgba(15,23,42,.22)"/>
-      </filter>
-
-      <filter id="glow2025" x="-80%" y="-80%" width="220%" height="220%">
-        <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="rgba(245,158,11,.55)"/>
-        <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="rgba(251,113,133,.30)"/>
-      </filter>
-    </defs>
-
-    <!-- 배경 패널 -->
-    <rect x="8" y="8" width="${W-16}" height="${H-16}" rx="18" fill="rgba(255,255,255,.88)" stroke="rgba(226,232,240,.95)"/>
-
-    <!-- 눈금 -->
-    <g>${tickEls.join("")}</g>
-
-    <!-- 튜브 -->
-    <g filter="url(#softShadow)">
-      <rect x="${tubeX}" y="${tubeY}" width="${tubeW}" height="${tubeH}" rx="${tubeW/2}" fill="rgba(226,232,240,.85)" stroke="rgba(148,163,184,.55)" />
-      <!-- 채움 -->
-      <clipPath id="clipTube">
-        <rect x="${tubeX}" y="${tubeY}" width="${tubeW}" height="${tubeH}" rx="${tubeW/2}"/>
-      </clipPath>
-      <g clip-path="url(#clipTube)">
-        <rect x="${tubeX}" y="${fillY}" width="${tubeW}" height="${fillH}" fill="url(#gradFill)" opacity="${gMain===null?0.0:0.95}"/>
-      </g>
-
-      <!-- 벌브 -->
-      <circle cx="${bulbCX}" cy="${bulbCY}" r="${bulbR}" fill="rgba(226,232,240,.90)" stroke="rgba(148,163,184,.55)"/>
-      <circle cx="${bulbCX}" cy="${bulbCY}" r="${bulbR-6}" fill="url(#gradFill)" opacity="${gMain===null?0.0:0.95}"/>
-      <circle cx="${bulbCX-10}" cy="${bulbCY-10}" r="9" fill="rgba(255,255,255,.55)"/>
-    </g>
-
-    <!-- 연도별 마커 -->
-    ${marker("2025", g25, true)}
-    ${marker("2024", g24, false)}
-    ${marker("2023", g23, false)}
-
-    <!-- 하단 캡션 -->
-    <text x="${W/2}" y="${H-18}" text-anchor="middle" font-size="11" font-weight="950" fill="rgba(107,114,128,.95)">
-      70%cut (등급, 낮을수록 좋음)
-    </text>
-  </svg>
-  `;
+<svg viewBox="0 0 60 200" class="thermo">
+<defs>
+<linearGradient id="g" x1="0" y1="1" x2="0" y2="0">
+<stop offset="0%" stop-color="#4dabf7"/>
+<stop offset="50%" stop-color="#ffd43b"/>
+<stop offset="100%" stop-color="#ff6b6b"/>
+</linearGradient>
+</defs>
+<rect x="20" y="10" width="20" height="160" rx="10" fill="#eee"/>
+<rect x="20" y="${170-pct*1.6}" width="20" height="${pct*1.6}" rx="10" fill="url(#g)">
+<animate attributeName="height" from="0" to="${pct*1.6}" dur="0.8s"/>
+</rect>
+<text x="30" y="${165-pct*1.6}" text-anchor="middle" font-size="12">${value}</text>
+</svg>`;
 }
 
-/** =========================
- *  카드 렌더
- *  ========================= */
-function renderCards(arr){
-  cards.innerHTML = "";
-  empty.style.display = arr.length ? "none" : "block";
-
-  for(const p of arr){
-    const k = pickKey(p);
-
-    const r25 = getRecord("2025", p);
-    const r24 = getRecord("2024", p);
-    const r23 = getRecord("2023", p);
-
-    const yRow = (year, rec)=>{
-      const quota = fmt(rec?.quota);
-      const ratio = fmt(rec?.ratio);
-      const rank  = fmt(rec?.rank);
-      const cut50 = fmt(rec?.cut50);
-      const cut70 = fmt(rec?.cut70);
-
-      const trClass = year==="2025" ? "y2025" : "";
-      return `
-        <tr class="${trClass}">
-          <td>${year}</td>
-          <td>${quota}</td>
-          <td>${ratio}</td>
-          <td>${rank}</td>
-          <td>${cut50}</td>
-          <td>${cut70}</td>
-        </tr>
-      `;
-    };
-
-    const tClass = understandTrackClass(p.track);
-    const trackPillClass = tClass==="kyo" ? "track-kyo" : (tClass==="jong" ? "track-jong" : "");
-
-    // 온도계 데이터: cut70 숫자만
-    const vByYear = {
-      "2025": asNum(r25?.cut70),
-      "2024": asNum(r24?.cut70),
-      "2023": asNum(r23?.cut70)
-    };
-
-    const thermo = thermoSVG(vByYear);
-
-    const cardEl = document.createElement("div");
-    cardEl.className = "card";
-    cardEl.innerHTML = `
-      <div class="cardTop">
-        <div style="min-width:0">
-          <h3>${p.univ} · ${p.major}</h3>
-          <div class="meta">
-            <span class="pill ${trackPillClass}">
-              전형: ${p.track}
-            </span>
-            <span class="pill">
-              세부: ${p.type}
-            </span>
-          </div>
-        </div>
-        <button class="del" title="삭제" aria-label="삭제">×</button>
-      </div>
-
-      <div class="cardBody">
-        <div>
-          <table class="tbl">
-            <thead>
-              <tr>
-                <th>연도</th>
-                <th>모집인원</th>
-                <th>경쟁률</th>
-                <th>충원순위</th>
-                <th>50%cut</th>
-                <th>70%cut</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${yRow("2025", r25)}
-              ${yRow("2024", r24)}
-              ${yRow("2023", r23)}
-            </tbody>
-          </table>
-        </div>
-
-        <div class="thermoWrap">
-          <div class="legend">
-            <span class="dot"></span><span>좋음(낮은 등급)</span>
-            <span class="dot mid"></span><span>보통</span>
-            <span class="dot bad"></span><span>높음(주의)</span>
-          </div>
-          <div style="width:min(180px, 100%);">
-            ${thermo}
-          </div>
-        </div>
-      </div>
-    `;
-
-    cardEl.querySelector(".del").onclick = ()=>removePick(k);
-    cards.appendChild(cardEl);
-  }
-}
-
-/** =========================
- *  초기 실행
- *  ========================= */
-window.addEventListener("load", async ()=>{
-  await loadData();
-});
+/* ================= 시작 ================= */
+loadData();
 </script>
 </body>
 </html>
