@@ -2,114 +2,245 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>모두의 수시 3개년 입시결과 비교 온도계</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <style>
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont;
-  background: #f5f7fb;
-  padding: 40px;
+:root{
+  --blue:#4f8cff;
+  --yellow:#ffc83d;
+  --red:#ff5b5b;
+  --bg:#f4f6fb;
 }
-
-.card {
-  background: #fff;
-  border-radius: 20px;
-  padding: 30px;
-  max-width: 900px;
-  margin: auto;
-  box-shadow: 0 20px 40px rgba(0,0,0,.08);
+*{box-sizing:border-box;font-family:Pretendard,Apple SD Gothic Neo,Arial}
+body{margin:0;background:var(--bg)}
+.container{
+  max-width:1200px;
+  margin:40px auto;
+  background:#fff;
+  border-radius:24px;
+  padding:36px;
+  box-shadow:0 20px 50px rgba(0,0,0,.08)
 }
-
-.progress {
-  height: 8px;
-  border-radius: 4px;
-  background: #eee;
-  overflow: hidden;
-  margin-top: 20px;
+h1{margin:0;font-size:32px}
+.sub{margin-top:6px;font-weight:600}
+.badge{
+  display:inline-block;
+  margin-top:14px;
+  padding:8px 16px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#ffcf5a,#ff6a5a);
+  color:#000;
+  font-weight:700
 }
-
-.bar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg,#4facfe,#f093fb,#f5576c);
-  transition: width .4s ease;
+.guide{
+  margin:20px 0;
+  padding:14px 18px;
+  border-radius:14px;
+  background:#f1f3f5;
+  font-size:14px
 }
-
-select, button {
-  padding: 12px;
-  margin-top: 12px;
-  width: 100%;
+.select-row{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr 1fr auto;
+  gap:12px;
+  margin-top:18px
 }
+select,button{
+  height:48px;
+  border-radius:12px;
+  border:1px solid #ddd;
+  padding:0 14px;
+  font-size:15px
+}
+button{
+  background:#ffc107;
+  border:none;
+  font-weight:700;
+  cursor:pointer
+}
+button:disabled{opacity:.4;cursor:not-allowed}
+.progress-wrap{margin-top:20px}
+.progress{
+  height:8px;
+  background:#e9ecef;
+  border-radius:999px;
+  overflow:hidden
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--blue),var(--yellow),var(--red));
+  transition:width .4s
+}
+.progress-text{margin-top:6px;font-size:13px}
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+  margin-top:28px
+}
+.card{
+  background:#fff;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 10px 25px rgba(0,0,0,.08);
+  position:relative
+}
+.card h3{margin:0 0 6px;font-size:17px}
+.remove{
+  position:absolute;top:12px;right:12px;
+  cursor:pointer;font-weight:900
+}
+svg{width:100%;height:180px}
+.scale text{font-size:10px;fill:#555}
 </style>
 </head>
 
 <body>
-<div class="card">
+<div class="container">
   <h1>모두의 수시 3개년 입시결과 비교 온도계</h1>
-  <p>Copyright@All Teachers</p>
+  <div class="sub">Copyright@All Teachers</div>
+  <div class="badge">출처 : 어디가 3개년 입시결과</div>
 
-  <select id="univ">
-    <option>로딩 중...</option>
-  </select>
-
-  <div class="progress">
-    <div class="bar" id="bar"></div>
+  <div class="guide">
+    ① 대학 → ② 모집단위 → ③ 전형 → ④ 세부전형 선택<br>
+    최대 3개 비교 가능 · 2025년 데이터 강조
   </div>
 
-  <p id="status">데이터 불러오는 중...</p>
+  <div class="select-row">
+    <select id="school" disabled><option>로딩 중...</option></select>
+    <select id="dept" disabled><option>모집단위</option></select>
+    <select id="type" disabled><option>전형</option></select>
+    <select id="detail" disabled><option>세부전형</option></select>
+    <button id="add" disabled>비교 추가</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress"><div class="progress-bar" id="bar"></div></div>
+    <div class="progress-text" id="ptext">데이터 불러오는 중…</div>
+  </div>
+
+  <div class="cards" id="cards"></div>
 </div>
 
 <script>
-const API_URL =
-  'https://script.google.com/macros/s/AKfycbw4cVu8rVN-EjUv1XIBQ0xWAnv0Rd9gl4q-2Oyxa9vSOEcl0cqONZWAcqAMsDE4CxY/exec';
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4cVu8rVN-EjUv1XIBQ0xWAnv0Rd9gl4q-2Oyxa9vSOEcl0cqONZWAcqAMsDE4CxY/exec";
 
-const bar = document.getElementById('bar');
-const status = document.getElementById('status');
-const select = document.getElementById('univ');
+const state={
+  cache:{},
+  selected:[]
+};
 
-let fakeProgress = 0;
-const timer = setInterval(() => {
-  fakeProgress = Math.min(fakeProgress + 10, 90);
-  bar.style.width = fakeProgress + '%';
-}, 300);
+const $=id=>document.getElementById(id);
+const bar=$("bar"), ptext=$("ptext");
 
-(async function loadData() {
-  try {
-    const cache = localStorage.getItem('admissionData');
-    if (cache) {
-      init(JSON.parse(cache));
-      return;
-    }
+function progress(p,t){
+  bar.style.width=p+"%";
+  if(t) ptext.innerText=t;
+}
 
-    const res = await fetch(API_URL);
-    const data = await res.json();
+async function fetchJSON(params){
+  const url = SCRIPT_URL + "?" + new URLSearchParams(params);
+  const r = await fetch(url);
+  return r.json();
+}
 
-    localStorage.setItem('admissionData', JSON.stringify(data));
-    init(data);
-
-  } catch (e) {
-    status.textContent = '데이터 로딩 실패';
-    console.error(e);
+(async function init(){
+  try{
+    progress(10,"학교 목록 불러오는 중…");
+    const schools = await fetchJSON({mode:"schools"});
+    $("school").innerHTML="<option value=''>대학 선택</option>"+schools.map(s=>`<option>${s}</option>`).join("");
+    $("school").disabled=false;
+    progress(100,"완료");
+  }catch(e){
+    ptext.innerText="데이터 로딩 실패";
   }
 })();
 
-function init(data) {
-  clearInterval(timer);
-  bar.style.width = '100%';
-  status.textContent = '로딩 완료';
+$("school").onchange=async e=>{
+  progress(30,"모집단위 로딩 중…");
+  $("dept").disabled=true;
+  const d=await fetchJSON({mode:"depts",school:e.target.value});
+  $("dept").innerHTML="<option value=''>모집단위</option>"+d.map(v=>`<option>${v}</option>`).join("");
+  $("dept").disabled=false;
+  progress(50);
+};
 
-  const set = new Set();
-  Object.values(data).forEach(year =>
-    year.forEach(r => set.add(r.대학명))
-  );
+$("dept").onchange=async e=>{
+  progress(60,"전형 로딩 중…");
+  const t=await fetchJSON({mode:"types",school:$("school").value,dept:e.target.value});
+  $("type").innerHTML="<option value=''>전형</option>"+t.map(v=>`<option>${v}</option>`).join("");
+  $("type").disabled=false;
+  progress(70);
+};
 
-  select.innerHTML = '';
-  [...set].sort().forEach(u => {
-    const o = document.createElement('option');
-    o.textContent = u;
-    select.appendChild(o);
+$("type").onchange=async e=>{
+  progress(80,"세부전형 로딩 중…");
+  const d=await fetchJSON({
+    mode:"details",
+    school:$("school").value,
+    dept:$("dept").value,
+    type:e.target.value
   });
+  $("detail").innerHTML="<option value=''>세부전형</option>"+d.map(v=>`<option>${v}</option>`).join("");
+  $("detail").disabled=false;
+  $("add").disabled=false;
+  progress(100);
+};
+
+$("add").onclick=async ()=>{
+  if(state.selected.length>=3) return;
+  const data = await fetchJSON({
+    mode:"data",
+    school:$("school").value,
+    dept:$("dept").value,
+    type:$("type").value,
+    detail:$("detail").value
+  });
+  state.selected.push(data);
+  render();
+};
+
+function render(){
+  $("cards").innerHTML="";
+  state.selected.forEach((d,i)=>{
+    const div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`
+      <div class="remove" onclick="remove(${i})">✕</div>
+      <h3>${d.school}</h3>
+      <div>${d.dept} / ${d.detail}</div>
+      ${thermo(d)}
+    `;
+    $("cards").appendChild(div);
+  });
+}
+
+window.remove=i=>{
+  state.selected.splice(i,1);
+  render();
+};
+
+function thermo(d){
+  const score = d.cut70 || 9;
+  const y = 160 - (score-1)/8*140;
+  return `
+<svg viewBox="0 0 80 180">
+<defs>
+<linearGradient id="g" x1="0" y1="1" x2="0" y2="0">
+<stop offset="0%" stop-color="${getComputedStyle(document.documentElement).getPropertyValue('--blue')}"/>
+<stop offset="50%" stop-color="${getComputedStyle(document.documentElement).getPropertyValue('--yellow')}"/>
+<stop offset="100%" stop-color="${getComputedStyle(document.documentElement).getPropertyValue('--red')}"/>
+</linearGradient>
+</defs>
+<rect x="35" y="20" width="10" height="140" rx="5" fill="#eee"/>
+<rect x="35" y="${y}" width="10" height="${160-y}" rx="5" fill="url(#g)">
+<animate attributeName="height" from="0" to="${160-y}" dur="0.8s"/>
+</rect>
+<circle cx="40" cy="${y}" r="6" fill="#000"/>
+<text x="10" y="${y+4}" font-size="10">${score}</text>
+</svg>`;
 }
 </script>
 </body>
