@@ -2,292 +2,254 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>모두의 입시결과 3개년 비교 온도계</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>모두의 수시 3개년 입시결과 비교 온도계</title>
 
 <style>
 :root{
-  --bg:#f5f3ff;
+  --bg:#f4f6fb;
   --card:#ffffff;
-  --primary:#6366f1;
-  --accent:#f59e0b;
-  --danger:#ef4444;
+  --main:#ffb703;
+  --text:#1f2937;
   --muted:#6b7280;
 }
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
-  background:linear-gradient(135deg,#eef2ff,#fdf2f8);
-}
-.container{
-  max-width:1200px;
-  margin:auto;
-  padding:24px;
-}
-header{
+
+*{box-sizing:border-box;font-family:system-ui,-apple-system,BlinkMacSystemFont;}
+body{margin:0;background:linear-gradient(180deg,#eef2ff,#fdf2f8);}
+
+.container{max-width:1200px;margin:40px auto;padding:20px;}
+.card{
   background:var(--card);
   border-radius:24px;
   padding:28px;
   box-shadow:0 20px 40px rgba(0,0,0,.08);
 }
-h1{margin:0;font-size:32px}
-.sub{margin-top:6px;font-weight:600}
+
+h1{margin:0;font-size:32px;}
+.subtitle{margin-top:6px;font-weight:700;}
 .badge{
   display:inline-block;
-  margin-top:14px;
-  padding:6px 16px;
+  margin-top:12px;
+  padding:8px 14px;
   border-radius:999px;
-  background:linear-gradient(90deg,#fde047,#fb7185);
-  font-weight:800;
+  background:linear-gradient(90deg,#fbbf24,#f87171);
+  color:#111;
+  font-weight:700;
 }
-.guide{
+
+.help{
   margin-top:18px;
-  padding:14px;
-  border-radius:16px;
-  background:#eef2ff;
+  background:#f1f5f9;
+  padding:14px 18px;
+  border-radius:14px;
+  color:#334155;
   font-size:14px;
-  color:#1f2937;
 }
-.controls{
-  margin-top:20px;
+
+.selects{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr)) auto;
   gap:12px;
+  margin-top:20px;
 }
+
 select,button{
   padding:14px;
   border-radius:14px;
   border:1px solid #e5e7eb;
-  font-size:14px;
+  font-size:15px;
 }
-button.primary{
-  background:#fde047;
+button{
+  background:var(--main);
+  border:none;
   font-weight:800;
   cursor:pointer;
 }
-button.reset{
-  background:#f3f4f6;
-  cursor:pointer;
+
+#progressWrap{
+  margin-top:20px;
+  display:none;
 }
-.cards{
-  margin-top:28px;
+#progress{
+  height:10px;
+  background:#e5e7eb;
+  border-radius:999px;
+  overflow:hidden;
+}
+#bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#60a5fa,#22c55e);
+  transition:width .3s;
+}
+
+.results{
+  margin-top:30px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:20px;
 }
-.card{
-  background:var(--card);
-  border-radius:24px;
-  padding:20px;
-  box-shadow:0 20px 40px rgba(0,0,0,.08);
-}
-.card-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-.card-header b{font-size:16px}
-.remove{
-  cursor:pointer;
-  color:#ef4444;
-  font-weight:800;
-}
-.table{
-  margin-top:12px;
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-.table th,.table td{
-  padding:6px;
-  text-align:center;
-}
-.table th{color:#6b7280}
-.table tr.y2025{
-  background:linear-gradient(90deg,#fef9c3,#fde68a);
-  font-weight:800;
-}
-.thermos{
-  margin-top:18px;
-  display:flex;
-  justify-content:space-around;
-  align-items:flex-end;
-  height:220px;
-}
-.thermo{
+
+.compareCard{
+  background:#f8fafc;
+  border-radius:20px;
+  padding:18px;
   position:relative;
-  width:48px;
-  height:200px;
+}
+.compareCard h3{margin:0 0 8px 0;font-size:16px;}
+.remove{
+  position:absolute;
+  top:12px;right:12px;
+  background:#ef4444;color:#fff;
+  border:none;border-radius:999px;
+  width:26px;height:26px;
+  cursor:pointer;
+}
+
+.table{
+  font-size:14px;
+  margin-top:10px;
+}
+.table div{display:flex;justify-content:space-between;padding:4px 0;}
+
+.thermo{
+  margin-top:16px;
+  height:220px;
+  width:60px;
   background:#e5e7eb;
-  border-radius:24px;
-  overflow:hidden;
+  border-radius:999px;
+  position:relative;
 }
 .fill{
   position:absolute;
   bottom:0;
   width:100%;
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  color:#111;
-  font-weight:800;
-  font-size:12px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#22c55e,#facc15,#ef4444);
 }
 .scale{
   position:absolute;
-  left:100%;
+  right:-38px;
   top:0;
-  font-size:10px;
-  color:#6b7280;
+  height:100%;
+  font-size:12px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
 }
-.scale div{
-  height:20px;
-}
-.year-label{
-  text-align:center;
-  margin-top:6px;
-  font-weight:700;
-}
+.scale span{color:#374151;}
+
 @media(max-width:600px){
-  h1{font-size:24px}
+  h1{font-size:24px;}
 }
 </style>
 </head>
 
 <body>
 <div class="container">
+  <div class="card">
+    <h1>모두의 수시 3개년 입시결과 비교 온도계</h1>
+    <div class="subtitle">Copyright@All Teachers</div>
+    <div class="badge">출처: 어디가 3개년 입시결과</div>
 
-<header>
-  <h1>모두의 입시결과 3개년 비교 온도계</h1>
-  <div class="sub">Copyright@All Teachers</div>
-  <div class="badge">출처: 어디가 3개년 입시결과</div>
+    <div class="help">
+      ① 대학 → ② 모집단위 → ③ 전형 → ④ 세부전형 선택<br/>
+      최대 3개까지 비교 가능 · 2025년 데이터 강조
+    </div>
 
-  <div class="guide">
-    ① 대학 → ② 모집단위 → ③ 전형 → ④ 세부전형 선택<br>
-    🔥 최대 3개 비교 · 2025 데이터 강조 · 새로고침해도 유지
+    <div class="selects">
+      <select id="univ"><option>대학 선택</option></select>
+      <select id="dept"><option>모집단위</option></select>
+      <select id="type"><option>전형</option></select>
+      <select id="detail"><option>세부전형</option></select>
+      <button id="add">비교 추가 (최대 3)</button>
+    </div>
+
+    <div id="progressWrap">
+      <div id="progress"><div id="bar"></div></div>
+    </div>
+
+    <div class="results" id="results"></div>
   </div>
-
-  <div class="controls">
-    <select id="univ"><option>대학 선택</option></select>
-    <select id="major"><option>모집단위</option></select>
-    <select id="track"><option>전형 선택</option></select>
-    <select id="type"><option>세부 전형</option></select>
-    <button class="primary" id="add">비교 추가 (최대 3)</button>
-    <button class="reset" id="reset">초기화</button>
-  </div>
-</header>
-
-<div class="cards" id="cards"></div>
-
 </div>
 
 <script>
 const DATA_URL =
 "https://script.google.com/macros/s/AKfycbw4cVu8rVN-EjUv1XIBQ0xWAnv0Rd9gl4q-2Oyxa9vSOEcl0cqONZWAcqAMsDE4CxY/exec";
 
-let DATA={}, selected=[];
+let RAW=null;
+let selected=[];
 
-const $=id=>document.getElementById(id);
-const YEARS=["2025","2024","2023"];
-const COLORS={
-  "2025":"linear-gradient(#fb7185,#f97316)",
-  "2024":"linear-gradient(#22c55e,#16a34a)",
-  "2023":"linear-gradient(#60a5fa,#2563eb)"
-};
+const bar=p=>document.getElementById("bar").style.width=p+"%";
 
-fetch(DATA_URL).then(r=>r.json()).then(d=>{
-  DATA=d;
-  Object.keys(d).forEach(u=>$("univ").append(new Option(u,u)));
-});
-
-$("univ").onchange=()=>{
-  $("major").innerHTML="<option>모집단위</option>";
-  Object.keys(DATA[$("univ").value]||{})
-    .forEach(m=>$("major").append(new Option(m,m)));
-};
-
-$("major").onchange=()=>{
-  $("track").innerHTML="<option>전형 선택</option>";
-  Object.keys(DATA[$("univ").value][$("major").value]||{})
-    .forEach(t=>$("track").append(new Option(t,t)));
-};
-
-$("track").onchange=()=>{
-  $("type").innerHTML="<option>세부 전형</option>";
-  Object.keys(DATA[$("univ").value][$("major").value][$("track").value]||{})
-    .forEach(t=>$("type").append(new Option(t,t)));
-};
-
-$("add").onclick=()=>{
-  if(selected.length>=3) return alert("최대 3개까지");
-  const key=[$("univ").value,$("major").value,$("track").value,$("type").value].join("|");
-  if(key.includes("선택")) return;
-  selected.push(key);
-  localStorage.setItem("compare",JSON.stringify(selected));
-  render();
-};
-
-$("reset").onclick=()=>{
-  selected=[];
-  localStorage.removeItem("compare");
-  render();
-};
-
-function score(cut){
-  if(!cut) return 0;
-  return Math.max(10,(9-cut)*12);
+async function loadData(){
+  document.getElementById("progressWrap").style.display="block";
+  bar(10);
+  const res=await fetch(DATA_URL);
+  bar(40);
+  RAW=await res.json();
+  bar(100);
+  setTimeout(()=>document.getElementById("progressWrap").style.display="none",500);
+  initUniv();
 }
 
+function initUniv(){
+  const u=document.getElementById("univ");
+  Object.keys(RAW).forEach(v=>u.add(new Option(v,v)));
+}
+
+function clear(sel){sel.length=1;}
+
+univ.onchange=()=>{
+  clear(dept);clear(type);clear(detail);
+  Object.keys(RAW[univ.value]).forEach(v=>dept.add(new Option(v,v)));
+};
+
+dept.onchange=()=>{
+  clear(type);clear(detail);
+  Object.keys(RAW[univ.value][dept.value]).forEach(v=>type.add(new Option(v,v)));
+};
+
+type.onchange=()=>{
+  clear(detail);
+  Object.keys(RAW[univ.value][dept.value][type.value])
+    .forEach(v=>detail.add(new Option(v,v)));
+};
+
+add.onclick=()=>{
+  if(selected.length>=3)return alert("최대 3개까지");
+  const d=RAW[univ.value][dept.value][type.value][detail.value];
+  selected.push({univ:univ.value,dept:dept.value,type:type.value,detail:detail.value,data:d});
+  render();
+};
+
 function render(){
-  const box=$("cards");
-  box.innerHTML="";
-  selected.forEach((k,i)=>{
-    const [u,m,tr,tp]=k.split("|");
-    const rec=DATA[u][m][tr][tp];
-    let rows="", thermos="";
-    YEARS.forEach(y=>{
-      const r=rec[y]||{};
-      rows+=`
-        <tr class="${y==="2025"?"y2025":""}">
-          <td>${y}</td>
-          <td>${r.quota||"-"}</td>
-          <td>${r.ratio||"-"}</td>
-          <td>${r.cut70||"-"}</td>
-        </tr>`;
-      const h=score(r.cut70);
-      thermos+=`
-        <div>
-          <div class="thermo">
-            <div class="fill" style="height:${h}%;background:${COLORS[y]}">${r.cut70||""}</div>
-          </div>
-          <div class="year-label">${y}</div>
-        </div>`;
-    });
-    box.innerHTML+=`
-    <div class="card">
-      <div class="card-header">
-        <b>${u}<br>${m}<br>${tp}</b>
-        <span class="remove" onclick="remove(${i})">✕</span>
+  const wrap=document.getElementById("results");
+  wrap.innerHTML="";
+  selected.forEach((s,i)=>{
+    const cut=s.data.cut70||9;
+    const level=Math.min(9,Math.max(1,cut));
+    const h=(10-level)/9*100;
+
+    wrap.innerHTML+=`
+    <div class="compareCard">
+      <button class="remove" onclick="selected.splice(${i},1);render()">×</button>
+      <h3>${s.univ}<br>${s.dept}</h3>
+      <div class="table">
+        <div><span>경쟁률</span><span>${s.data.ratio}</span></div>
+        <div><span>70%컷</span><span>${cut}</span></div>
       </div>
-      <table class="table">
-        <tr><th>연도</th><th>모집</th><th>경쟁률</th><th>70%</th></tr>
-        ${rows}
-      </table>
-      <div class="thermos">${thermos}</div>
+      <div class="thermo">
+        <div class="fill" style="height:${h}%"></div>
+        <div class="scale">
+          <span>1</span><span>3</span><span>5</span><span>7</span><span>9</span>
+        </div>
+      </div>
     </div>`;
   });
 }
 
-function remove(i){
-  selected.splice(i,1);
-  localStorage.setItem("compare",JSON.stringify(selected));
-  render();
-}
-
-const saved=localStorage.getItem("compare");
-if(saved){ selected=JSON.parse(saved); render(); }
+loadData();
 </script>
-
 </body>
 </html>
