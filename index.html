@@ -2,135 +2,155 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>모두의 입시결과 3개년 비교 온도계</title>
 
 <style>
 :root{
-  --bg:#f6f7fb;
+  --bg:#f5f3ff;
   --card:#ffffff;
-  --primary:#ffb703;
-  --accent:#ff6b6b;
-  --blue:#4dabf7;
-  --text:#222;
+  --primary:#6366f1;
+  --accent:#f59e0b;
+  --danger:#ef4444;
+  --muted:#6b7280;
 }
-
+*{box-sizing:border-box}
 body{
   margin:0;
-  font-family: "Pretendard","Apple SD Gothic Neo",sans-serif;
-  background:linear-gradient(180deg,#f2f4ff,#fdf7f7);
-  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR",sans-serif;
+  background:linear-gradient(135deg,#eef2ff,#fdf2f8);
 }
-
 .container{
   max-width:1200px;
-  margin:40px auto;
-  padding:20px;
+  margin:auto;
+  padding:24px;
 }
-
 header{
   background:var(--card);
   border-radius:24px;
   padding:28px;
-  box-shadow:0 20px 50px rgba(0,0,0,.08);
+  box-shadow:0 20px 40px rgba(0,0,0,.08);
 }
-
-h1{
-  margin:0;
-  font-size:28px;
-}
-
-.sub{
-  margin-top:6px;
-  font-weight:600;
-}
-
+h1{margin:0;font-size:32px}
+.sub{margin-top:6px;font-weight:600}
 .badge{
   display:inline-block;
-  margin-top:12px;
-  padding:8px 14px;
-  border-radius:999px;
-  background:linear-gradient(135deg,#ffd166,#ef476f);
-  color:#000;
-  font-weight:700;
-}
-
-.guide{
   margin-top:14px;
-  padding:12px 16px;
-  background:#f1f3f5;
-  border-radius:12px;
-  font-size:14px;
+  padding:6px 16px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#fde047,#fb7185);
+  font-weight:800;
 }
-
+.guide{
+  margin-top:18px;
+  padding:14px;
+  border-radius:16px;
+  background:#eef2ff;
+  font-size:14px;
+  color:#1f2937;
+}
 .controls{
+  margin-top:20px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
   gap:12px;
-  margin-top:20px;
 }
-
 select,button{
   padding:14px;
   border-radius:14px;
-  border:1px solid #ddd;
-  font-size:15px;
+  border:1px solid #e5e7eb;
+  font-size:14px;
 }
-
-button{
-  background:var(--primary);
-  border:none;
+button.primary{
+  background:#fde047;
   font-weight:800;
   cursor:pointer;
 }
-
-.compare-area{
-  margin-top:30px;
+button.reset{
+  background:#f3f4f6;
+  cursor:pointer;
 }
-
-.compare-card{
+.cards{
+  margin-top:28px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+}
+.card{
   background:var(--card);
-  border-radius:20px;
+  border-radius:24px;
   padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,.06);
+  box-shadow:0 20px 40px rgba(0,0,0,.08);
 }
-
-.gauges{
+.card-header{
   display:flex;
-  gap:24px;
-  margin-top:16px;
+  justify-content:space-between;
+  align-items:center;
 }
-
-.gauge{
-  width:90px;
-  height:240px;
-  background:#e9ecef;
-  border-radius:40px;
+.card-header b{font-size:16px}
+.remove{
+  cursor:pointer;
+  color:#ef4444;
+  font-weight:800;
+}
+.table{
+  margin-top:12px;
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+.table th,.table td{
+  padding:6px;
+  text-align:center;
+}
+.table th{color:#6b7280}
+.table tr.y2025{
+  background:linear-gradient(90deg,#fef9c3,#fde68a);
+  font-weight:800;
+}
+.thermos{
+  margin-top:18px;
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-end;
+  height:220px;
+}
+.thermo{
   position:relative;
+  width:48px;
+  height:200px;
+  background:#e5e7eb;
+  border-radius:24px;
   overflow:hidden;
 }
-
 .fill{
   position:absolute;
   bottom:0;
   width:100%;
   display:flex;
-  align-items:flex-end;
+  align-items:flex-start;
   justify-content:center;
-  color:#000;
-  font-weight:700;
-  font-size:14px;
+  color:#111;
+  font-weight:800;
+  font-size:12px;
 }
-
-.year{
+.scale{
+  position:absolute;
+  left:100%;
+  top:0;
+  font-size:10px;
+  color:#6b7280;
+}
+.scale div{
+  height:20px;
+}
+.year-label{
   text-align:center;
-  margin-top:8px;
+  margin-top:6px;
   font-weight:700;
 }
-
 @media(max-width:600px){
-  .gauges{justify-content:space-around;}
+  h1{font-size:24px}
 }
 </style>
 </head>
@@ -145,104 +165,116 @@ button{
 
   <div class="guide">
     ① 대학 → ② 모집단위 → ③ 전형 → ④ 세부전형 선택<br>
-    최대 3개까지 비교 가능 · 2025년 데이터 강조
+    🔥 최대 3개 비교 · 2025 데이터 강조 · 새로고침해도 유지
   </div>
 
   <div class="controls">
-    <select id="year"></select>
-    <select id="univ"></select>
-    <select id="major"></select>
-    <select id="detail"></select>
-    <button id="add">비교 추가 (최대 3)</button>
+    <select id="univ"><option>대학 선택</option></select>
+    <select id="major"><option>모집단위</option></select>
+    <select id="track"><option>전형 선택</option></select>
+    <select id="type"><option>세부 전형</option></select>
+    <button class="primary" id="add">비교 추가 (최대 3)</button>
+    <button class="reset" id="reset">초기화</button>
   </div>
 </header>
 
-<div class="compare-area" id="compare"></div>
+<div class="cards" id="cards"></div>
 
 </div>
 
 <script>
-const DATA_URL = "https://script.google.com/macros/s/AKfycbz_nkDgCK8-tPgvEFR-QAzzAxE9Dke7udddR68y7CIOEs4JZe8B2VWDvMuu_CdBzzsi/exec";
+const DATA_URL =
+"https://script.google.com/macros/s/AKfycbw4cVu8rVN-EjUv1XIBQ0xWAnv0Rd9gl4q-2Oyxa9vSOEcl0cqONZWAcqAMsDE4CxY/exec";
 
-let RAW = {};
-let selected = JSON.parse(localStorage.getItem("compare")||"[]");
+let DATA={}, selected=[];
 
-fetch(DATA_URL)
-.then(r=>r.json())
-.then(d=>{
-  RAW=d;
-  init();
-  render();
+const $=id=>document.getElementById(id);
+const YEARS=["2025","2024","2023"];
+const COLORS={
+  "2025":"linear-gradient(#fb7185,#f97316)",
+  "2024":"linear-gradient(#22c55e,#16a34a)",
+  "2023":"linear-gradient(#60a5fa,#2563eb)"
+};
+
+fetch(DATA_URL).then(r=>r.json()).then(d=>{
+  DATA=d;
+  Object.keys(d).forEach(u=>$("univ").append(new Option(u,u)));
 });
 
-function init(){
-  const yearSel = document.getElementById("year");
-  yearSel.innerHTML = Object.keys(RAW).map(y=>`<option>${y}</option>`).join("");
-  yearSel.onchange = loadUniv;
-  loadUniv();
-}
+$("univ").onchange=()=>{
+  $("major").innerHTML="<option>모집단위</option>";
+  Object.keys(DATA[$("univ").value]||{})
+    .forEach(m=>$("major").append(new Option(m,m)));
+};
 
-function loadUniv(){
-  const y = year.value;
-  univ.innerHTML = Object.keys(RAW[y]).map(v=>`<option>${v}</option>`).join("");
-  loadMajor();
-}
+$("major").onchange=()=>{
+  $("track").innerHTML="<option>전형 선택</option>";
+  Object.keys(DATA[$("univ").value][$("major").value]||{})
+    .forEach(t=>$("track").append(new Option(t,t)));
+};
 
-function loadMajor(){
-  const y=year.value,u=univ.value;
-  major.innerHTML = Object.keys(RAW[y][u]).map(m=>`<option>${m}</option>`).join("");
-  loadDetail();
-}
+$("track").onchange=()=>{
+  $("type").innerHTML="<option>세부 전형</option>";
+  Object.keys(DATA[$("univ").value][$("major").value][$("track").value]||{})
+    .forEach(t=>$("type").append(new Option(t,t)));
+};
 
-function loadDetail(){
-  const y=year.value,u=univ.value,m=major.value;
-  const types = RAW[y][u][m];
-  detail.innerHTML="";
-  Object.keys(types).forEach(t=>{
-    Object.keys(types[t]).forEach(d=>{
-      detail.innerHTML+=`<option>${t} / ${d}</option>`;
-    });
-  });
-}
-
-add.onclick=()=>{
-  if(selected.length>=3)return alert("최대 3개");
-  selected.push({
-    year:year.value,
-    univ:univ.value,
-    major:major.value,
-    detail:detail.value
-  });
+$("add").onclick=()=>{
+  if(selected.length>=3) return alert("최대 3개까지");
+  const key=[$("univ").value,$("major").value,$("track").value,$("type").value].join("|");
+  if(key.includes("선택")) return;
+  selected.push(key);
   localStorage.setItem("compare",JSON.stringify(selected));
   render();
 };
 
+$("reset").onclick=()=>{
+  selected=[];
+  localStorage.removeItem("compare");
+  render();
+};
+
+function score(cut){
+  if(!cut) return 0;
+  return Math.max(10,(9-cut)*12);
+}
+
 function render(){
-  const box=document.getElementById("compare");
+  const box=$("cards");
   box.innerHTML="";
-  selected.forEach((s,i)=>{
-    const [t,d]=s.detail.split(" / ");
-    const rec=RAW[s.year][s.univ][s.major][t][d];
-    const h=Math.min(100,(10-rec.cut70)*10);
+  selected.forEach((k,i)=>{
+    const [u,m,tr,tp]=k.split("|");
+    const rec=DATA[u][m][tr][tp];
+    let rows="", thermos="";
+    YEARS.forEach(y=>{
+      const r=rec[y]||{};
+      rows+=`
+        <tr class="${y==="2025"?"y2025":""}">
+          <td>${y}</td>
+          <td>${r.quota||"-"}</td>
+          <td>${r.ratio||"-"}</td>
+          <td>${r.cut70||"-"}</td>
+        </tr>`;
+      const h=score(r.cut70);
+      thermos+=`
+        <div>
+          <div class="thermo">
+            <div class="fill" style="height:${h}%;background:${COLORS[y]}">${r.cut70||""}</div>
+          </div>
+          <div class="year-label">${y}</div>
+        </div>`;
+    });
     box.innerHTML+=`
-    <div class="compare-card">
-      <b>${s.univ} ${s.major}<br>${s.detail}</b>
-      <div class="gauges">
-        ${["2025","2024","2023"].map(y=>{
-          const r=RAW[y]?.[s.univ]?.[s.major]?.[t]?.[d];
-          const hh=r?Math.min(100,(10-r.cut70)*10):0;
-          return `
-          <div>
-            <div class="gauge">
-              <div class="fill" style="height:${hh}%;background:${y=="2025"?"#ff6b6b":"#4dabf7"}">
-                ${r? r.cut70:""}
-              </div>
-            </div>
-            <div class="year">${y}</div>
-          </div>`;
-        }).join("")}
+    <div class="card">
+      <div class="card-header">
+        <b>${u}<br>${m}<br>${tp}</b>
+        <span class="remove" onclick="remove(${i})">✕</span>
       </div>
-      <button onclick="remove(${i})">삭제</button>
+      <table class="table">
+        <tr><th>연도</th><th>모집</th><th>경쟁률</th><th>70%</th></tr>
+        ${rows}
+      </table>
+      <div class="thermos">${thermos}</div>
     </div>`;
   });
 }
@@ -252,6 +284,10 @@ function remove(i){
   localStorage.setItem("compare",JSON.stringify(selected));
   render();
 }
+
+const saved=localStorage.getItem("compare");
+if(saved){ selected=JSON.parse(saved); render(); }
 </script>
+
 </body>
 </html>
