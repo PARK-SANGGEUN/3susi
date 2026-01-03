@@ -7,241 +7,182 @@
 
 <style>
 :root{
-  --blue:#4f8cff;
-  --yellow:#ffc83d;
-  --red:#ff5b5b;
-  --bg:#f4f6fb;
+  --bg:#f5f7ff;
+  --card:#ffffff;
+  --primary:#6c5ce7;
+  --accent:#ffb703;
+  --text:#222;
+  --muted:#666;
 }
-*{box-sizing:border-box;font-family:Pretendard,Apple SD Gothic Neo,Arial}
-body{margin:0;background:var(--bg)}
-.container{
-  max-width:1200px;
-  margin:40px auto;
-  background:#fff;
-  border-radius:24px;
-  padding:36px;
-  box-shadow:0 20px 50px rgba(0,0,0,.08)
+
+*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;}
+body{margin:0;background:linear-gradient(135deg,#eef2ff,#fff);color:var(--text);}
+.container{max-width:1100px;margin:40px auto;padding:24px;}
+.card{background:var(--card);border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.08);padding:28px;}
+h1{margin:0 0 8px;font-size:28px;}
+.badge{display:inline-block;background:linear-gradient(90deg,#ffd166,#ef476f);color:#000;padding:8px 14px;border-radius:999px;font-weight:600;font-size:14px;margin:8px 0;}
+.guide{background:#f1f3f5;border-radius:12px;padding:12px 16px;color:#333;margin:16px 0;font-size:14px;}
+
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:20px;}
+select,button{padding:12px 14px;border-radius:12px;border:1px solid #ddd;font-size:15px;}
+button{background:#ffb703;border:none;font-weight:700;cursor:pointer;}
+button:disabled{opacity:.4;cursor:not-allowed;}
+
+.compare{margin-top:32px;}
+.compare-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;}
+
+.compare-card{border-radius:18px;padding:18px;background:#fafafa;position:relative;}
+.remove{position:absolute;top:10px;right:12px;cursor:pointer;color:#999;}
+
+.table{width:100%;border-collapse:collapse;margin-top:12px;}
+.table th,.table td{padding:8px;text-align:center;border-bottom:1px solid #eee;font-size:14px;}
+
+.thermo{margin-top:16px;text-align:center;}
+svg{max-width:100%;height:220px;}
+
+@media(max-width:600px){
+  h1{font-size:22px}
 }
-h1{margin:0;font-size:32px}
-.sub{margin-top:6px;font-weight:600}
-.badge{
-  display:inline-block;
-  margin-top:14px;
-  padding:8px 16px;
-  border-radius:999px;
-  background:linear-gradient(90deg,#ffcf5a,#ff6a5a);
-  color:#000;
-  font-weight:700
-}
-.guide{
-  margin:20px 0;
-  padding:14px 18px;
-  border-radius:14px;
-  background:#f1f3f5;
-  font-size:14px
-}
-.select-row{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr 1fr auto;
-  gap:12px;
-  margin-top:18px
-}
-select,button{
-  height:48px;
-  border-radius:12px;
-  border:1px solid #ddd;
-  padding:0 14px;
-  font-size:15px
-}
-button{
-  background:#ffc107;
-  border:none;
-  font-weight:700;
-  cursor:pointer
-}
-button:disabled{opacity:.4;cursor:not-allowed}
-.progress-wrap{margin-top:20px}
-.progress{
-  height:8px;
-  background:#e9ecef;
-  border-radius:999px;
-  overflow:hidden
-}
-.progress-bar{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,var(--blue),var(--yellow),var(--red));
-  transition:width .4s
-}
-.progress-text{margin-top:6px;font-size:13px}
-.cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:16px;
-  margin-top:28px
-}
-.card{
-  background:#fff;
-  border-radius:18px;
-  padding:18px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
-  position:relative
-}
-.card h3{margin:0 0 6px;font-size:17px}
-.remove{
-  position:absolute;top:12px;right:12px;
-  cursor:pointer;font-weight:900
-}
-svg{width:100%;height:180px}
-.scale text{font-size:10px;fill:#555}
 </style>
 </head>
 
 <body>
 <div class="container">
-  <h1>모두의 수시 3개년 입시결과 비교 온도계</h1>
-  <div class="sub">Copyright@All Teachers</div>
-  <div class="badge">출처 : 어디가 3개년 입시결과</div>
+  <div class="card">
+    <h1>모두의 수시 3개년 입시결과 비교 온도계</h1>
+    <div>Copyright@All Teachers</div>
+    <div class="badge">출처 : 어디가 3개년 입시결과</div>
 
-  <div class="guide">
-    ① 대학 → ② 모집단위 → ③ 전형 → ④ 세부전형 선택<br>
-    최대 3개 비교 가능 · 2025년 데이터 강조
+    <div class="guide">
+      ① 대학 → ② 모집단위 → ③ 전형 → ④ 세부전형 선택<br/>
+      최대 3개까지 비교 가능 · 2025년 데이터 강조
+    </div>
+
+    <div class="controls">
+      <select id="univ"></select>
+      <select id="dept"></select>
+      <select id="type"></select>
+      <select id="detail"></select>
+      <button id="add">비교 추가 (최대 3)</button>
+    </div>
   </div>
 
-  <div class="select-row">
-    <select id="school" disabled><option>로딩 중...</option></select>
-    <select id="dept" disabled><option>모집단위</option></select>
-    <select id="type" disabled><option>전형</option></select>
-    <select id="detail" disabled><option>세부전형</option></select>
-    <button id="add" disabled>비교 추가</button>
+  <div class="compare">
+    <h3>선택한 전형 비교</h3>
+    <div class="compare-grid" id="compareGrid"></div>
   </div>
-
-  <div class="progress-wrap">
-    <div class="progress"><div class="progress-bar" id="bar"></div></div>
-    <div class="progress-text" id="ptext">데이터 불러오는 중…</div>
-  </div>
-
-  <div class="cards" id="cards"></div>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4cVu8rVN-EjUv1XIBQ0xWAnv0Rd9gl4q-2Oyxa9vSOEcl0cqONZWAcqAMsDE4CxY/exec";
-
-const state={
-  cache:{},
-  selected:[]
-};
-
-const $=id=>document.getElementById(id);
-const bar=$("bar"), ptext=$("ptext");
-
-function progress(p,t){
-  bar.style.width=p+"%";
-  if(t) ptext.innerText=t;
-}
-
-async function fetchJSON(params){
-  const url = SCRIPT_URL + "?" + new URLSearchParams(params);
-  const r = await fetch(url);
-  return r.json();
-}
-
-(async function init(){
-  try{
-    progress(10,"학교 목록 불러오는 중…");
-    const schools = await fetchJSON({mode:"schools"});
-    $("school").innerHTML="<option value=''>대학 선택</option>"+schools.map(s=>`<option>${s}</option>`).join("");
-    $("school").disabled=false;
-    progress(100,"완료");
-  }catch(e){
-    ptext.innerText="데이터 로딩 실패";
+// ✅ 내부 고정 데이터 (예시)
+// 실제 데이터로 바꿀 땐 이 객체만 교체
+const DATA = {
+  "강원대":{
+    "간호학과":{
+      "종합":{
+        "미래인재전형":{
+          "2025":{quota:30,ratio:4.3,cut70:3.9},
+          "2024":{quota:28,ratio:3.8,cut70:4.1},
+          "2023":{quota:26,ratio:3.5,cut70:4.3}
+        }
+      }
+    }
   }
-})();
-
-$("school").onchange=async e=>{
-  progress(30,"모집단위 로딩 중…");
-  $("dept").disabled=true;
-  const d=await fetchJSON({mode:"depts",school:e.target.value});
-  $("dept").innerHTML="<option value=''>모집단위</option>"+d.map(v=>`<option>${v}</option>`).join("");
-  $("dept").disabled=false;
-  progress(50);
 };
 
-$("dept").onchange=async e=>{
-  progress(60,"전형 로딩 중…");
-  const t=await fetchJSON({mode:"types",school:$("school").value,dept:e.target.value});
-  $("type").innerHTML="<option value=''>전형</option>"+t.map(v=>`<option>${v}</option>`).join("");
-  $("type").disabled=false;
-  progress(70);
+const YEARS=["2025","2024","2023"];
+const selects={
+  univ:document.getElementById("univ"),
+  dept:document.getElementById("dept"),
+  type:document.getElementById("type"),
+  detail:document.getElementById("detail")
 };
+const compareGrid=document.getElementById("compareGrid");
+const selected=[];
 
-$("type").onchange=async e=>{
-  progress(80,"세부전형 로딩 중…");
-  const d=await fetchJSON({
-    mode:"details",
-    school:$("school").value,
-    dept:$("dept").value,
-    type:e.target.value
-  });
-  $("detail").innerHTML="<option value=''>세부전형</option>"+d.map(v=>`<option>${v}</option>`).join("");
-  $("detail").disabled=false;
-  $("add").disabled=false;
-  progress(100);
-};
+// 초기화
+function init(){
+  fill(selects.univ,Object.keys(DATA),"대학 선택");
+  selects.univ.onchange=()=>{
+    fill(selects.dept,Object.keys(DATA[selects.univ.value]||{}),"모집단위");
+  };
+  selects.dept.onchange=()=>{
+    fill(selects.type,Object.keys(DATA[selects.univ.value][selects.dept.value]||{}),"전형");
+  };
+  selects.type.onchange=()=>{
+    fill(selects.detail,Object.keys(DATA[selects.univ.value][selects.dept.value][selects.type.value]||{}),"세부전형");
+  };
+}
+function fill(sel,arr,ph){
+  sel.innerHTML=`<option>${ph}</option>`;
+  arr.forEach(v=>sel.innerHTML+=`<option>${v}</option>`);
+}
 
-$("add").onclick=async ()=>{
-  if(state.selected.length>=3) return;
-  const data = await fetchJSON({
-    mode:"data",
-    school:$("school").value,
-    dept:$("dept").value,
-    type:$("type").value,
-    detail:$("detail").value
-  });
-  state.selected.push(data);
+// 비교 추가
+document.getElementById("add").onclick=()=>{
+  if(selected.length>=3) return alert("최대 3개까지 가능합니다");
+  const u=selects.univ.value,d=selects.dept.value,t=selects.type.value,s=selects.detail.value;
+  if(!DATA[u]?.[d]?.[t]?.[s]) return;
+  selected.push({u,d,t,s,data:DATA[u][d][t][s]});
   render();
 };
 
+// 렌더
 function render(){
-  $("cards").innerHTML="";
-  state.selected.forEach((d,i)=>{
-    const div=document.createElement("div");
-    div.className="card";
-    div.innerHTML=`
-      <div class="remove" onclick="remove(${i})">✕</div>
-      <h3>${d.school}</h3>
-      <div>${d.dept} / ${d.detail}</div>
-      ${thermo(d)}
+  compareGrid.innerHTML="";
+  selected.forEach((item,i)=>{
+    const c=document.createElement("div");
+    c.className="compare-card";
+    c.innerHTML=`
+      <div class="remove" onclick="removeItem(${i})">✕</div>
+      <b>${item.u} ${item.d}</b><br>${item.s}
+      ${table(item.data)}
+      ${thermo(item.data)}
     `;
-    $("cards").appendChild(div);
+    compareGrid.appendChild(c);
   });
 }
+window.removeItem=i=>{selected.splice(i,1);render();};
 
-window.remove=i=>{
-  state.selected.splice(i,1);
-  render();
-};
-
-function thermo(d){
-  const score = d.cut70 || 9;
-  const y = 160 - (score-1)/8*140;
+// 테이블
+function table(d){
   return `
-<svg viewBox="0 0 80 180">
-<defs>
-<linearGradient id="g" x1="0" y1="1" x2="0" y2="0">
-<stop offset="0%" stop-color="${getComputedStyle(document.documentElement).getPropertyValue('--blue')}"/>
-<stop offset="50%" stop-color="${getComputedStyle(document.documentElement).getPropertyValue('--yellow')}"/>
-<stop offset="100%" stop-color="${getComputedStyle(document.documentElement).getPropertyValue('--red')}"/>
-</linearGradient>
-</defs>
-<rect x="35" y="20" width="10" height="140" rx="5" fill="#eee"/>
-<rect x="35" y="${y}" width="10" height="${160-y}" rx="5" fill="url(#g)">
-<animate attributeName="height" from="0" to="${160-y}" dur="0.8s"/>
-</rect>
-<circle cx="40" cy="${y}" r="6" fill="#000"/>
-<text x="10" y="${y+4}" font-size="10">${score}</text>
-</svg>`;
+  <table class="table">
+    <tr><th>연도</th><th>모집</th><th>경쟁률</th><th>70%cut</th></tr>
+    ${YEARS.map(y=>`
+      <tr ${y==="2025"?"style='font-weight:700;background:#fff3bf'":""}>
+        <td>${y}</td>
+        <td>${d[y].quota}</td>
+        <td>${d[y].ratio}</td>
+        <td>${d[y].cut70}</td>
+      </tr>`).join("")}
+  </table>`;
 }
+
+// 온도계
+function thermo(d){
+  const v=d["2025"].cut70;
+  const pct=(9-v)/8*100;
+  return `
+  <div class="thermo">
+    <svg viewBox="0 0 80 220">
+      <defs>
+        <linearGradient id="g" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stop-color="#457b9d"/>
+          <stop offset="50%" stop-color="#ffd166"/>
+          <stop offset="100%" stop-color="#ef476f"/>
+        </linearGradient>
+      </defs>
+      <rect x="30" y="10" width="20" height="180" rx="10" fill="#eee"/>
+      <rect x="30" y="${190-pct*1.8}" width="20" height="${pct*1.8}" rx="10" fill="url(#g)">
+        <animate attributeName="height" from="0" to="${pct*1.8}" dur="0.8s" fill="freeze"/>
+      </rect>
+      <text x="40" y="${190-pct*1.8-6}" text-anchor="middle" font-size="12">${v}</text>
+    </svg>
+  </div>`;
+}
+
+init();
 </script>
 </body>
 </html>
